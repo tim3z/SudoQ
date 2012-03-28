@@ -7,6 +7,7 @@
  */
 package de.sudoq.controller.sudoku;
 
+import android.content.Context;
 import android.content.res.Configuration;
 import android.util.Log;
 import android.view.View;
@@ -15,6 +16,7 @@ import de.sudoq.R;
 import de.sudoq.model.ModelChangeListener;
 import de.sudoq.model.actionTree.ActionTreeElement;
 import de.sudoq.view.FullScrollLayout;
+import de.sudoq.view.ZoomableView;
 import de.sudoq.view.actionTree.ActionElement;
 import de.sudoq.view.actionTree.ActionTreeElementView;
 import de.sudoq.view.actionTree.ActiveElement;
@@ -46,8 +48,24 @@ public class ActionTreeController implements ActionTreeNavListener, ModelChangeL
 	/**
 	 * Das Layout, in dem der ActionTree angezeigt wird
 	 */
-	private RelativeLayout relativeLayout;
+	private ActionTreeLayout relativeLayout;
 
+	/**
+	 * Das Layout für den ActionTree 
+	 */
+	private class ActionTreeLayout extends RelativeLayout implements ZoomableView {
+
+		public ActionTreeLayout(Context context) {
+			super(context);
+		}
+
+		@Override
+		public boolean zoom(float factor) {
+			return false;
+		}
+		
+	}
+	
 	/**
 	 * Die View des aktuellen Elements
 	 */
@@ -138,7 +156,7 @@ public class ActionTreeController implements ActionTreeNavListener, ModelChangeL
 		this.rootElementInitX = 1;// frameLayout.getHeight() / 2;
 		this.rootElementInitY = 1;// frameLayout.getWidth() / 2;
 
-		this.relativeLayout = new RelativeLayout(context);
+		this.relativeLayout = new ActionTreeLayout(context);
 
 		// Setting active element
 		active = context.getGame().getStateHandler().getCurrentState();
