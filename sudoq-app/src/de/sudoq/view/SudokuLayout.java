@@ -32,7 +32,7 @@ import de.sudoq.model.sudoku.sudokuTypes.TypeBasic;
 /**
  * Eine View als RealativeLayout, die eine Sudoku-Anzeige verwaltet.
  */
-public class SudokuLayout extends RelativeLayout implements ObservableFieldInteraction {
+public class SudokuLayout extends RelativeLayout implements ObservableFieldInteraction, ZoomableView {
 	/**
 	 * Das Log-Tag für den LogCat
 	 */
@@ -368,9 +368,10 @@ public class SudokuLayout extends RelativeLayout implements ObservableFieldInter
 	 * @param factor
 	 *            Der Zoom-Faktor
 	 */
-	public void setZoomFactor(float factor) {
+	public boolean zoom(float factor) {
 		this.zoomFactor = factor;
 		refresh();
+		return true;
 	}
 
 	/**

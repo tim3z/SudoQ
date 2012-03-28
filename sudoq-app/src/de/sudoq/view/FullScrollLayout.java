@@ -38,12 +38,6 @@ public class FullScrollLayout extends LinearLayout {
 	private float zoomFactor;
 
 	/**
-	 * Flag, ob seit dem letzten Aufruf der isZoomPerformed-Methode gezoomt
-	 * wurde.
-	 */
-	private boolean zoomPerformed;
-
-	/**
 	 * Der View, der horizontales Scrollen erlaubt und im View für vertikales
 	 * Scrollen enthalten ist.
 	 */
@@ -65,6 +59,12 @@ public class FullScrollLayout extends LinearLayout {
 	 */
 	private ScaleGestureDetector scaleGestureDetector;
 
+	/**
+	 * Die View, die sich in diesem FullScrollLayout befindet.
+	 */
+	private ZoomableView childView;
+	
+	
 	/**
 	 * Instanziiert ein neues ScrollLayout mit den gegebenen Parametern
 	 * 
@@ -101,7 +101,6 @@ public class FullScrollLayout extends LinearLayout {
 		if (this.zoomFactor == 0) {
 			this.zoomFactor = 1.0f;
 		}
-		this.zoomPerformed = false;
 
 		this.verticalScrollView = new VerticalScroll(getContext());
 		this.horizontalScrollView = new HorizontalScroll(getContext());
@@ -112,12 +111,15 @@ public class FullScrollLayout extends LinearLayout {
 
 	/**
 	 * Fügt eine View zu diesem Layout hinzu. Ist bereits eine vorhanden, so
-	 * wird diese gelöscht.
+	 * wird diese gelöscht. Die spezifizierte View muss ZoomableView implementiere, sonst wird nichts getan.
 	 */
 	@Override
 	public void addView(View v) {
-		this.horizontalScrollView.removeAllViews();
-		this.horizontalScrollView.addView(v, new LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.FILL_PARENT));
+		if (v instanceof ZoomableView) {
+			this.horizontalScrollView.removeAllViews();
+			this.childView = (ZoomableView) v;
+			this.horizontalScrollView.addView(v, new LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.FILL_PARENT));
+		}
 	}
 
 	/**
@@ -128,13 +130,15 @@ public class FullScrollLayout extends LinearLayout {
 	 */
 	@Override
 	public boolean onTouchEvent(MotionEvent event) {
-		if (event.getPointerCount() == 1) {
-			this.horizontalScrollView.performTouch(event);
-			this.verticalScrollView.performTouch(event);
-			return true;
-		} else {
-			return false;
+		this.horizontalScrollView.performTouch(event);
+		this.verticalScrollView.performTouch(event);
+		
+		if (event.getPointerCount() > 1) {
+			if (this.childView != null) {
+				this.scaleGestureDetector.onTouchEvent(event);
+			}
 		}
+		return true;
 	}
 
 	/**
@@ -161,39 +165,12 @@ public class FullScrollLayout extends LinearLayout {
 	}
 
 	/**
-	 * Verarbeitet ZoomEvents, also solche mit zwei Fingern.
-	 * 
-	 * @param event
-	 *            Das MotionEvent
-	 */
-	public void performZoomEvent(MotionEvent event) {
-		this.scaleGestureDetector.onTouchEvent(event);
-	}
-
-	/**
 	 * Setzt den Zoom zurück.
 	 */
 	public void resetZoom() {
+		this.childView.zoom(1.0f);
 		setZoomFactor(1.0f);
 		scrollTo(0, 0);
-	}
-
-	/**
-	 * Gibt zurück, ob ein Zoom performt wurde und setzt den Zustand zurück.
-	 * 
-	 * @return true, falls ein Zoom performt wurde, false falls nicht
-	 */
-	public boolean isZoomPerformed() {
-		boolean res = this.zoomPerformed;
-		this.zoomPerformed = false;
-		return res;
-	}
-
-	/**
-	 * Scrollt an die korrekte Position.
-	 */
-	public void scrollCorrect() {
-		scrollTo((int) (currentX * zoomFactor) + getWidth() / 2, (int) (currentY * zoomFactor) + getHeight() / 2);
 	}
 
 	/**
@@ -324,30 +301,23 @@ public class FullScrollLayout extends LinearLayout {
 	private class ScaleGestureListener extends ScaleGestureDetector.SimpleOnScaleGestureListener {
 		@Override
 		public boolean onScale(ScaleGestureDetector detector) {
-			float oldZoom = zoomFactor;
 			float scaleFactor = detector.getScaleFactor();
-			zoomFactor *= scaleFactor;
+			float newZoom = zoomFactor * scaleFactor;
+
 			// Don't let the object get too large.
-			zoomFactor = Math.max(Math.min(zoomFactor, MAX_ZOOM), 1.0f);
-
-			// if (Math.abs(zoomFactor - oldZoom) > 0.0001f)
-			zoomPerformed = true;
-
+			newZoom = Math.max(Math.min(newZoom,  MAX_ZOOM), 1.0f);
+			
+			if (!childView.zoom(newZoom)) {
+				return false;
+			}
+			
+			zoomFactor = newZoom;
+			
 			currentX += detector.getFocusX() - detector.getFocusX() / scaleFactor;
 			currentY += detector.getFocusY() - detector.getFocusY() / scaleFactor;
 
-			// currentX = currentX < 0 ? 0 :
-			// (currentX > getMeasuredWidth() * zoomFactor - getMeasuredWidth()
-			// ? currentX = getMeasuredWidth() * zoomFactor - getMeasuredWidth()
-			// : currentX);
-			//
-			// currentY = currentY < 0 ? 0 :
-			// (currentY > getMeasuredHeight() * zoomFactor -
-			// getMeasuredHeight() ? currentY = getMeasuredHeight() * zoomFactor
-			// - getMeasuredHeight() : currentY);
-
 			scrollTo((int) currentX + getWidth() / 2, (int) currentY + getHeight() / 2);
-			// invalidate();
+
 			Log.d(LOG_TAG, "Scaled");
 			return true;
 		}

@@ -246,7 +246,7 @@ public class SudokuActivity extends SudoqActivity implements OnClickListener, Ac
 					if (save != null) {
 						float zoomFactor = save.getFloat(SAVE_ZOOM_FACTOR + "");
 						if (zoomFactor != 0.0f) {
-							sudokuView.setZoomFactor(zoomFactor);
+							sudokuView.zoom(zoomFactor);
 							sudokuScrollView.setZoomFactor(zoomFactor);
 						}
 						float scrollX = save.getFloat(SAVE_SCROLL_X + "") + sudokuView.getCurrentLeftMargin();
@@ -454,24 +454,6 @@ public class SudokuActivity extends SudoqActivity implements OnClickListener, Ac
 	}
 
 	/**
-	 * Reagiert auf TouchEvents des Benutzers.
-	 * 
-	 * @param event
-	 *            Das Touch Event
-	 */
-	@Override
-	public boolean onTouchEvent(MotionEvent event) {
-		this.sudokuScrollView.performZoomEvent(event);
-		if (this.sudokuScrollView.isZoomPerformed()) {
-			this.sudokuView.setZoomFactor(this.sudokuScrollView.getZoomFactor());
-			// this.sudokuScrollView.scrollCorrect();
-			// sudokuScrollView.scrollView(event);
-		}
-
-		return true;
-	}
-
-	/**
 	 * Schaltet den ActionTree an bzw. aus.
 	 */
 	public void toogleActionTree() {
@@ -561,7 +543,7 @@ public class SudokuActivity extends SudoqActivity implements OnClickListener, Ac
 		float prevZoomFactor = this.sudokuScrollView.getZoomFactor();
 		sudokuView.setDrawingCacheEnabled(true);
 		sudokuScrollView.resetZoom();
-		sudokuView.setZoomFactor(1.0f);
+		
 		// Restoring measurements after zomming out.
 		this.sudokuView.measure(MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED), MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED));
 		this.sudokuView.layout(0, 0, this.sudokuView.getMeasuredWidth(), this.sudokuView.getMeasuredHeight());
