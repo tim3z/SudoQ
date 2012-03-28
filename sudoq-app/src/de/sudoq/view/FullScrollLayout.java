@@ -23,11 +23,6 @@ import android.widget.ScrollView;
  */
 public class FullScrollLayout extends LinearLayout {
 	/**
-	 * Der maximale Zoom Faktor.
-	 */
-	private static final float MAX_ZOOM = 3.0f;
-
-	/**
 	 * Der Log-Tag
 	 */
 	private static final String LOG_TAG = FullScrollLayout.class.getSimpleName();
@@ -305,7 +300,7 @@ public class FullScrollLayout extends LinearLayout {
 			float newZoom = zoomFactor * scaleFactor;
 
 			// Don't let the object get too large.
-			newZoom = Math.max(Math.min(newZoom,  MAX_ZOOM), 1.0f);
+			newZoom = Math.max(Math.min(newZoom, childView.getMaxZoomFactor()), childView.getMinZoomFactor());
 			
 			if (!childView.zoom(newZoom)) {
 				return false;

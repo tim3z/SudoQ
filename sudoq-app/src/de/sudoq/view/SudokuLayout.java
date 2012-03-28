@@ -438,4 +438,20 @@ public class SudokuLayout extends RelativeLayout implements ObservableFieldInter
 		}
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public float getMinZoomFactor() {
+		return 1.0f;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public float getMaxZoomFactor() {
+		return this.game.getSudoku().getSudokuType().getSize().getX() / 2.0f;
+	}
+
 }

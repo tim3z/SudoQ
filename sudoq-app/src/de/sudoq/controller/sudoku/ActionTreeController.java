@@ -51,7 +51,7 @@ public class ActionTreeController implements ActionTreeNavListener, ModelChangeL
 	private ActionTreeLayout relativeLayout;
 
 	/**
-	 * Das Layout für den ActionTree 
+	 * Das Layout für den ActionTree. 
 	 */
 	private class ActionTreeLayout extends RelativeLayout implements ZoomableView {
 
@@ -59,9 +59,31 @@ public class ActionTreeController implements ActionTreeNavListener, ModelChangeL
 			super(context);
 		}
 
+		/**
+		 * {@inheritDoc}
+		 */
 		@Override
 		public boolean zoom(float factor) {
-			return false;
+			AT_RASTER_SIZE = (int)(factor * 70);
+			MAX_ELEMENT_VIEW_SIZE = AT_RASTER_SIZE - 2;
+			refresh();
+			return true;
+		}
+
+		/**
+		 * {@inheritDoc}
+		 */
+		@Override
+		public float getMinZoomFactor() {
+			return 0.2f;
+		}
+
+		/**
+		 * {@inheritDoc}
+		 */
+		@Override
+		public float getMaxZoomFactor() {
+			return 2.0f;
 		}
 		
 	}
@@ -89,12 +111,12 @@ public class ActionTreeController implements ActionTreeNavListener, ModelChangeL
 	/**
 	 * Die Größe des intern verwendeten Rasters in Pixeln
 	 */
-	public static final int AT_RASTER_SIZE = 70;
+	public static int AT_RASTER_SIZE = 70;
 
 	/**
 	 * Maximale erlaubte Größe in Pixeln eines Elements
 	 */
-	public static final int MAX_ELEMENT_VIEW_SIZE = 68;
+	public static int MAX_ELEMENT_VIEW_SIZE = 68;
 
 	/**
 	 * Initial x coord of the ActionTrees root element.
