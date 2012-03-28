@@ -7,15 +7,18 @@
  */
 package de.sudoq.controller.tutorial;
 
-import de.sudoq.R;
 import android.app.TabActivity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.TabHost;
 import android.widget.TabHost.TabSpec;
+import de.sudoq.R;
 
 public class TutorialActivity extends TabActivity {
 
+	/**
+	 * {@inheritDoc}
+	 */
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.tutorial);

@@ -59,7 +59,8 @@ public class MenuTest extends SudoqTestCase {
 		solo.assertCurrentActivity("should be sudokupreferences", SudokuPreferencesActivity.class);
 
 		solo.clickOnText(solo.getCurrentActivity().getString(R.string.sf_sudokupreferences_assistances));
-	//	solo.assertCurrentActivity("should be playerpreferences", PlayerPreferencesActivity.class);
+		// solo.assertCurrentActivity("should be playerpreferences",
+		// PlayerPreferencesActivity.class);
 
 		// CheckBox checkBox = (CheckBox)
 		// solo.getCurrentActivity().findViewById(R.id.checkbox_autoAdjustNotes);
@@ -109,5 +110,14 @@ public class MenuTest extends SudoqTestCase {
 		solo.sendKey(Solo.MENU);
 		solo.clickOnText(solo.getCurrentActivity().getString(R.string.sudokuloading_delete_finished));
 		assertTrue(((SudokuLoadingActivity) solo.getCurrentActivity()).getSize() == 1);
+	}
+
+	public void testTutorial() {
+		Activity a = solo.getCurrentActivity();
+		solo.sendKey(Solo.MENU);
+		solo.clickOnText(a.getString(R.string.optionsmenu_tutorial));
+		solo.clickOnText(a.getString(R.string.sf_tutorial_sudoku_title));
+		solo.clickOnText(a.getString(R.string.sf_tutorial_assistances_title));
+		solo.clickOnText(a.getString(R.string.sf_tutorial_action_title));
 	}
 }
