@@ -111,10 +111,12 @@ public class ActionTreeController implements ActionTreeNavListener, ModelChangeL
 	/** Constructors */
 
 	/**
-	 * Erstellt einen neuen ActionTreeController. Wirft eine IllegalArgumentException, falls der context null ist.
+	 * Erstellt einen neuen ActionTreeController. Wirft eine
+	 * IllegalArgumentException, falls der context null ist.
 	 * 
 	 * @param context
-	 *            Kontext, von welchem der ActionTreeController verwendet werden soll
+	 *            Kontext, von welchem der ActionTreeController verwendet werden
+	 *            soll
 	 * @throws IllegalArgumentException
 	 *             Wird geworfen, falls der übergebene Context null ist
 	 */
@@ -177,20 +179,43 @@ public class ActionTreeController implements ActionTreeNavListener, ModelChangeL
 	 *            Die Position des Elements in x-Richtung
 	 * @param y
 	 *            Die Position des Elements in y-Richtung
-	 * @return Die Anzahl der unter dem übergebenen Element gezeichneten Elemente
+	 * @return Die Anzahl der unter dem übergebenen Element gezeichneten
+	 *         Elemente
 	 */
 	private int drawElementsUnder(ActionTreeElement root, int x, int y) {
+		boolean split = false;
+		while (root != null) {
+			drawElementAt(root, x, y);
+
+			if (root.isSplitUp()) {
+				split = true;
+				break;
+			}
+
+			root = root.getChildren().hasNext() ? root.getChildren().next() : null;
+			if (root != null) {
+				if (orientation == Configuration.ORIENTATION_PORTRAIT) {
+					drawLine(x, y, x + 1, y);
+				} else {
+					drawLine(x, y, x, y + 1);
+				}
+			}
+			x++;
+		}
+
 		int dy = 0;
-		for (ActionTreeElement child : root) {
-			if (orientation == Configuration.ORIENTATION_PORTRAIT) {
-				drawLine(x, y, x + 1, y + dy);
-				dy += drawElementsUnder(child, x + 1, y + dy);
-			} else {
-				drawLine(x, y, x + dy, y + 1);
-				dy += drawElementsUnder(child, x + dy, y + 1);
+		if (split) {
+			for (ActionTreeElement child : root) {
+				if (orientation == Configuration.ORIENTATION_PORTRAIT) {
+					drawLine(x, y, x + 1, y + dy);
+					dy += drawElementsUnder(child, x + 1, y + dy);
+				} else {
+					drawLine(x, y, x + dy, y + 1);
+					dy += drawElementsUnder(child, x + dy, y + 1);
+				}
 			}
 		}
-		drawElementAt(root, x, y);
+
 		this.actionTreeHeight = x > this.actionTreeHeight ? x : this.actionTreeHeight;
 		this.actionTreeWidht = y > this.actionTreeWidht ? y : this.actionTreeWidht;
 		return dy > 0 ? dy : 1;
