@@ -1,0 +1,323 @@
+/*
+ * SudoQ is a Sudoku-App for Adroid Devices with Version 2.2 at least.
+ * Copyright (C) 2012  Haiko Klare, Julian Geppert, Jan-Bernhard Kordaß, Jonathan Kieling, Tim Zeitz, Timo Abele
+ * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 3 of the License, or (at your option) any later version. 
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details. 
+ * You should have received a copy of the GNU General Public License along with this program; if not, see <http://www.gnu.org/licenses/>.
+ */
+package de.sudoq.controller.sudoku;
+
+import android.content.res.Configuration;
+import android.util.Log;
+import android.view.View;
+import android.widget.RelativeLayout;
+import de.sudoq.R;
+import de.sudoq.model.ModelChangeListener;
+import de.sudoq.model.actionTree.ActionTreeElement;
+import de.sudoq.view.FullScrollLayout;
+import de.sudoq.view.actionTree.ActionElement;
+import de.sudoq.view.actionTree.ActionTreeElementView;
+import de.sudoq.view.actionTree.ActiveElement;
+import de.sudoq.view.actionTree.BookmarkedElement;
+import de.sudoq.view.actionTree.BranchingElement;
+import de.sudoq.view.actionTree.BranchingLine;
+
+/**
+ * Reagiert auf Interaktionen des Benutzers mit dem Aktionsbaum.
+ */
+public class ActionTreeController implements ActionTreeNavListener, ModelChangeListener<ActionTreeElement> {
+	/** Attributes */
+
+	/**
+	 * Der Log-Tag
+	 */
+	private static final String LOG_TAG = ActionTreeController.class.getSimpleName();
+
+	/**
+	 * Kontext, von dem der ActionTreeController verwendet wird
+	 */
+	private SudokuActivity context;
+
+	/**
+	 * Die ScrolLView des ActionTrees
+	 */
+	private FullScrollLayout actionTreeScroll;
+
+	/**
+	 * Das Layout, in dem der ActionTree angezeigt wird
+	 */
+	private RelativeLayout relativeLayout;
+
+	/**
+	 * Die View des aktuellen Elements
+	 */
+	private ActionTreeElementView activeElementView;
+
+	/**
+	 * Das aktuelle Element
+	 */
+	private ActionTreeElement active;
+
+	/**
+	 * Die aktuelle X-Position der ScrollView
+	 */
+	private int activeX;
+
+	/**
+	 * Die aktuelle Y-Position der ScrollView
+	 */
+	private int activeY;
+
+	/**
+	 * Die Größe des intern verwendeten Rasters in Pixeln
+	 */
+	public static final int AT_RASTER_SIZE = 70;
+
+	/**
+	 * Maximale erlaubte Größe in Pixeln eines Elements
+	 */
+	public static final int MAX_ELEMENT_VIEW_SIZE = 68;
+
+	/**
+	 * Initial x coord of the ActionTrees root element.
+	 */
+	private int rootElementInitX;
+
+	/**
+	 * Initial y coord of the ActionTrees root element.
+	 */
+	private int rootElementInitY;
+
+	/**
+	 * Das Layout in dem sich der ActionTree befindet.
+	 */
+	private RelativeLayout actionTreeLayout;
+
+	/**
+	 * Die Höhe des Aktionsbaumes beim letzten Zeichnen.
+	 */
+	private int actionTreeHeight;
+
+	/**
+	 * Die Breite des Aktionsbaumes beim letzten Zeichnen.
+	 */
+	private int actionTreeWidht;
+
+	/**
+	 * Die aktuelle Ausrichtung des Geräts
+	 */
+	private int orientation;
+
+	/** Constructors */
+
+	/**
+	 * Erstellt einen neuen ActionTreeController. Wirft eine IllegalArgumentException, falls der context null ist.
+	 * 
+	 * @param context
+	 *            Kontext, von welchem der ActionTreeController verwendet werden soll
+	 * @throws IllegalArgumentException
+	 *             Wird geworfen, falls der übergebene Context null ist
+	 */
+	public ActionTreeController(SudokuActivity context) {
+		if (context == null) {
+			throw new IllegalArgumentException("Unvalid param context!");
+		}
+		this.context = context;
+		this.context.getGame().getStateHandler().registerListener(this);
+
+		this.actionTreeLayout = (RelativeLayout) context.findViewById(R.id.sudoku_action_tree_layout);
+		this.actionTreeScroll = (FullScrollLayout) context.findViewById(R.id.sudoku_action_tree_scroll);
+	}
+
+	/**
+	 * Erzeugt die View des ActionTrees.
+	 */
+	private void inflateActionTree() {
+		this.rootElementInitX = 1;// frameLayout.getHeight() / 2;
+		this.rootElementInitY = 1;// frameLayout.getWidth() / 2;
+
+		this.relativeLayout = new RelativeLayout(context);
+
+		// Setting active element
+		active = context.getGame().getStateHandler().getCurrentState();
+		ActionTreeElement root = context.getGame().getStateHandler().getActionTree().getRoot();
+
+		// Get screen orientation
+		orientation = context.getResources().getConfiguration().orientation;
+
+		// Draw elements
+		this.actionTreeHeight = 0;
+		this.actionTreeWidht = 0;
+		drawElementsUnder(root, this.rootElementInitX, this.rootElementInitY);
+
+		// Dummy element for a margin at bottom
+		Log.d(LOG_TAG, "ActionTree height: " + this.actionTreeHeight);
+		Log.d(LOG_TAG, "ActionTree width: " + this.actionTreeWidht);
+		View view = new View(context);
+		RelativeLayout.LayoutParams viewLayoutParams = new RelativeLayout.LayoutParams(AT_RASTER_SIZE, AT_RASTER_SIZE);
+		viewLayoutParams.topMargin = (this.actionTreeHeight + 1) * AT_RASTER_SIZE;
+		viewLayoutParams.leftMargin = (this.actionTreeWidht + 1) * AT_RASTER_SIZE;
+		view.setLayoutParams(viewLayoutParams);
+		this.relativeLayout.addView(view);
+
+		// Add active element view
+		this.relativeLayout.addView(this.activeElementView);
+
+		// Put the new RelativeLayout containing the ActionTree into the
+		// ScrollView
+		this.actionTreeScroll.addView(relativeLayout);
+	}
+
+	/**
+	 * Zeichnet die Elemente unter dem spezifizierten.
+	 * 
+	 * @param root
+	 *            Das Ausgangselement
+	 * @param x
+	 *            Die Position des Elements in x-Richtung
+	 * @param y
+	 *            Die Position des Elements in y-Richtung
+	 * @return Die Anzahl der unter dem übergebenen Element gezeichneten Elemente
+	 */
+	private int drawElementsUnder(ActionTreeElement root, int x, int y) {
+		int dy = 0;
+		for (ActionTreeElement child : root) {
+			if (orientation == Configuration.ORIENTATION_PORTRAIT) {
+				drawLine(x, y, x + 1, y + dy);
+				dy += drawElementsUnder(child, x + 1, y + dy);
+			} else {
+				drawLine(x, y, x + dy, y + 1);
+				dy += drawElementsUnder(child, x + dy, y + 1);
+			}
+		}
+		drawElementAt(root, x, y);
+		this.actionTreeHeight = x > this.actionTreeHeight ? x : this.actionTreeHeight;
+		this.actionTreeWidht = y > this.actionTreeWidht ? y : this.actionTreeWidht;
+		return dy > 0 ? dy : 1;
+	}
+
+	/**
+	 * Zeichnet an der angegebenen Stelle das spezifizierte Element.
+	 * 
+	 * @param element
+	 *            Das zu zeichnende Element
+	 * @param x
+	 *            Die x-Position an der gezeichnet werden soll
+	 * @param y
+	 *            Die y-Position an der gezeichnet werden soll
+	 */
+	private void drawElementAt(ActionTreeElement element, int x, int y) {
+		ActionTreeElementView view = new ActionElement(this.context, null, element);
+
+		if (element.isMarked()) {
+			view = new BookmarkedElement(this.context, view, element);
+		}
+		if (element.isSplitUp()) {
+			view = new BranchingElement(this.context, view, element);
+		}
+
+		view.registerActionTreeNavListener(this.context);
+		view.registerActionTreeNavListener(this);
+
+		if (element == this.active) {
+			this.activeElementView = new ActiveElement(this.context, view, element);
+
+			this.activeX = x * AT_RASTER_SIZE;
+			this.activeY = y * AT_RASTER_SIZE;
+			RelativeLayout.LayoutParams viewLayoutParams = new RelativeLayout.LayoutParams(AT_RASTER_SIZE,
+					AT_RASTER_SIZE);
+			viewLayoutParams.topMargin = x * AT_RASTER_SIZE;
+			viewLayoutParams.leftMargin = y * AT_RASTER_SIZE;
+			this.activeElementView.setLayoutParams(viewLayoutParams);
+		} else {
+			RelativeLayout.LayoutParams viewLayoutParams = new RelativeLayout.LayoutParams(AT_RASTER_SIZE,
+					AT_RASTER_SIZE);
+			viewLayoutParams.topMargin = x * AT_RASTER_SIZE;
+			viewLayoutParams.leftMargin = y * AT_RASTER_SIZE;
+			view.setLayoutParams(viewLayoutParams);
+		}
+
+		if (element.isCorrect()) {
+			view.changeColor(ActionTreeElementView.CORRECT_COLOR);
+		}
+		if (element.isMistake()) {
+			view.changeColor(ActionTreeElementView.WRONG_COLOR);
+		}
+
+		this.relativeLayout.addView(view);
+	}
+
+	/**
+	 * Zeichnet eine Linie von/bis zu den spezifizierten Positionen.
+	 * 
+	 * @param fromX
+	 *            Startposition x-Richtung
+	 * @param fromY
+	 *            Startposition y-Richtung
+	 * @param toX
+	 *            Endposition x-Richtung
+	 * @param toY
+	 *            Endposition y-Richtung
+	 */
+	private void drawLine(int fromX, int fromY, int toX, int toY) {
+		BranchingLine branchingLine = new BranchingLine(this.context, fromX * AT_RASTER_SIZE, fromY * AT_RASTER_SIZE,
+				(toX * AT_RASTER_SIZE + AT_RASTER_SIZE / 2), (toY * AT_RASTER_SIZE));
+		RelativeLayout.LayoutParams branchingLineLayoutParams = new RelativeLayout.LayoutParams((toY * AT_RASTER_SIZE
+				- fromY * AT_RASTER_SIZE + AT_RASTER_SIZE),
+				(toX * AT_RASTER_SIZE - fromX * AT_RASTER_SIZE + AT_RASTER_SIZE));
+		branchingLineLayoutParams.topMargin = fromX * AT_RASTER_SIZE;
+		branchingLineLayoutParams.leftMargin = fromY * AT_RASTER_SIZE;
+		branchingLine.setLayoutParams(branchingLineLayoutParams);
+		this.relativeLayout.addView(branchingLine);
+	}
+
+	/**
+	 * Aktualisiert die ActionTree Ansicht neu
+	 */
+	public void refresh() {
+		inflateActionTree();
+		this.actionTreeLayout.setVisibility(View.VISIBLE);
+	}
+
+	/** Methods */
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public void onHoverTreeElement(ActionTreeElement ate) {
+		context.getGame().goToState(ate);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public void onLoadState(ActionTreeElement ate) {
+		context.getGame().goToState(ate);
+	}
+
+	/**
+	 * Macht den ActionTree sichtbar oder auch nicht gemäß dem Parameter
+	 * 
+	 * @param show
+	 *            true falls der Baum sichtbar sein soll false falls nicht
+	 */
+	public void setVisibility(boolean show) {
+		if (show) {
+			inflateActionTree();
+			this.actionTreeScroll.scrollTo(this.activeY + this.AT_RASTER_SIZE / 2, this.activeX + this.AT_RASTER_SIZE
+					/ 2);
+			this.actionTreeLayout.setVisibility(View.VISIBLE);
+		} else {
+			this.actionTreeLayout.setVisibility(View.INVISIBLE);
+		}
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public void onModelChanged(ActionTreeElement obj) {
+		if (this.context.isActionTreeShown()) {
+			refresh();
+		}
+	}
+}

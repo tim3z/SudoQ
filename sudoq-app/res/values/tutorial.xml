@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- SudoQ is a Sudoku-App for Adroid Devices with Version 2.2 at least. -->
+<!-- Copyright (C) 2012  Haiko Klare, Julian Geppert, Jan-Bernhard Kordaß, Jonathan Kieling, Tim Zeitz, Timo Abele -->
+<!-- This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 3 of the License, or (at your option) any later version.  -->
+<!-- This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.  -->
+<resources>
+    <!-- Sudoku Tutorial -->
+    <string name="sf_tutorial_sudoku_title">Sudoku</string>
+	<string name="sf_tutorial_sudoku_description1">A sudoku is a logic-based, combinatorial number-placement puzzle. The original sudoku
+	    is a 9x9 grid that has to be filled with digits so hat each column, each row and each of the nine 3x3 sub-grids contains
+	    all the digits from 1 to 9. At the beginning a sudoku is partially completed and has only one correct solution.</string>
+	<string name="sf_tutorial_sudoku_description2">Further sudoku types do not define the 3x3 sub-grids but other sets of fields which are 
+	    represented by a black edging or gray shaded fields in this app. The following images show both types of representation which can 
+	    overlap:</string>
+	<string name="sf_tutorial_sudoku_squiggly">Squiggly Type A Sudoku</string>
+	<string name="sf_tutorial_sudoku_xsudoku">X-Sudoku Type</string>
+    
+	<!-- Assistances Tutorial -->
+	<string name="sf_tutorial_assistances_title">Assistances</string>
+	<string name="sf_tutorial_assistances_description1">There are several assistances available to make it easier to solve a sudoku.
+	    These assistances can be classified as "passive" and "active" assistances.</string>
+	<string name = "sf_tutorial_assistances_description2">But: Activating a passive assistance or using an active assistance implies 
+	    your highscore to be lowered.</string>
+	 
+	<string name="sf_tutorial_assistances_passive_title">Passive assistances</string>
+	<string name="sf_tutorial_assistances_passive_description1">Passive assistances are those that can be activated in the profile or before
+	    starting a game. These assistances do not have to be called in a game but therefore they cannot be activated or deactivated in the
+	    game.</string>
+	<string name="sf_tutorial_assistances_passive_markrowcolumn_title">Mark row / column</string>
+	<string name="sf_tutorial_assistances_passive_markrowcolumn_description1">Activating this assistance emphasises the fields in the
+	    currently selected row and column.</string>
+	<string name="sf_tutorial_assistances_passive_autoadjustnotes_title">Auto adjust notes</string>
+	<string name="sf_tutorial_assistances_passive_autoadjustnotes_description1">This assistance updates your notes when a digit is put into a field. 
+	    If that digit is in the notes of a field in the same row, column or block you put it in, it is removed from those notes. </string>
+	<string name="sf_tutorial_assistances_passive_markwrongsymbols_title">Mark wrong symbols</string>
+	<string name="sf_tutorial_assistances_passive_markwrongsymbols_description1">If a digit is put into a field although it is already 
+	    in a field of the same row, column or block it is marked red because there cannot be the same digit in both fields.</string>
+	<string name="sf_tutorial_assistances_passive_inputassistance_title">Input assistance</string>
+	<string name="sf_tutorial_assistances_passive_inputassistance_description1">With this assistance activated you can only put a digit into a
+	    field that is not in one of the fields of the same row, column or block yet. All other digits are grayed out.</string>
+	
+	<string name="sf_tutorial_assistances_active_title">Active assistances</string>
+	<string name="sf_tutorial_assistances_active_description1">Active assistances can be used as you need them during a game.
+	    You can reach them by clicking on the button shown left.</string>
+	<string name="sf_tutorial_assistances_active_solverandomfield_title">Solve random field</string>
+	<string name="sf_tutorial_assistances_active_solverandomfield_description1">A random field is automatically solved for you.</string>
+	<string name="sf_tutorial_assistances_active_solvecurrentfield_title">Solve current field</string>
+	<string name="sf_tutorial_assistances_active_solvecurrentfield_description1">The field you have currently selected is solved for you.</string>
+	<string name="sf_tutorial_assistances_active_check_title">Check solution</string>
+	<string name="sf_tutorial_assistances_active_check_description1">Your current solution is checked and a message tells you if your
+	    currently solved fields are all correct or if there is a field that is solved wrong.</string>
+	<string name="sf_tutorial_assistances_active_backtolastcorrect_title">Back to last correct status</string>
+	<string name="sf_tutorial_assistances_active_backtolastcorrect_description1">Using this assistance reverts the game to the last state
+	    where all fields you have solved were correct. Although all your action that are reverted are saved in the action history and can
+	    be redone.</string>
+	<string name="sf_tutorial_assistances_active_surrender_title">Surrender</string>
+	<string name="sf_tutorial_assistances_active_surrender_description1">This is not an ordinary assistance. Using this the whole sudoku
+	    is automatically solved and you can take a look at the solution. You will get no score for a game you surrendered.</string>
+	    
+	<!-- ActionTree Tutorial -->
+	<string name="sf_tutorial_action_title">Action History</string>
+	<string name="sf_tutorial_action_description1">The action history saves everything you do in a sudoku game. Every field you modify by either
+	    solving it or by setting notes is saved into an action history. This enables you to try a solution and go back if it was
+	    wrong without having to memorise every step you made since your solution was right for the last time.</string>
+	<string name="sf_tutorial_action_description2">With the button at the left you can open this history in a game and navigate through the
+	    actions you did.</string>
+	<string name="sf_tutorial_action_description3">If you move back in the history and start playing from there a new branch is the history
+	    is created, so you can even go back to your old solution again.</string>
+	<string name="sf_tutorial_action_state">The image on the left shows a single action you did in the history.</string>
+	<string name="sf_tutorial_action_bookmark">In the action history you can set bookmarks to remember a state. Such a bookmark is represented
+	    as you can see in the image on the left.</string>
+	<string name="sf_tutorial_action_current_state">The image on the left shows how the state you are currently in is marked.</string>
+	<string name="sf_tutorial_action_branching">If there is a state from which you tried two different solutions there are two branches and
+	    the state is marked as you can see on the left.</string>
+	<string name="sf_tutorial_action_redoundo_title">Undo / Redo</string>
+	<string name="sf_tutorial_action_redoundo_description">With the buttons on the left you can easily undo or redo an action without
+	    opening the action history.</string>
+</resources>
