@@ -10,5 +10,6 @@
 			<attribute name="javadoc_location" value="jar:file:/home/eagle/pse/sudoq/test-app/libs/robotium-solo-3.1-javadoc.jar!/"/>
 		</attributes>
 	</classpathentry>
+	<classpathentry combineaccessrules="false" kind="src" path="/sudoq-model"/>
 	<classpathentry kind="output" path="bin/classes"/>
 </classpath>

@@ -30,3 +30,4 @@ test-app/bin
 test-app/gen
 test-app/coverage/
 tmp
+.metadata/
