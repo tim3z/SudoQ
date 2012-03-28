@@ -194,11 +194,7 @@ public class ActionTreeController implements ActionTreeNavListener, ModelChangeL
 
 			root = root.getChildren().hasNext() ? root.getChildren().next() : null;
 			if (root != null) {
-				if (orientation == Configuration.ORIENTATION_PORTRAIT) {
-					drawLine(x, y, x + 1, y);
-				} else {
-					drawLine(x, y, x, y + 1);
-				}
+				drawLine(x, y, x + 1, y);
 			}
 			x++;
 		}
@@ -206,13 +202,8 @@ public class ActionTreeController implements ActionTreeNavListener, ModelChangeL
 		int dy = 0;
 		if (split) {
 			for (ActionTreeElement child : root) {
-				if (orientation == Configuration.ORIENTATION_PORTRAIT) {
-					drawLine(x, y, x + 1, y + dy);
-					dy += drawElementsUnder(child, x + 1, y + dy);
-				} else {
-					drawLine(x, y, x + dy, y + 1);
-					dy += drawElementsUnder(child, x + dy, y + 1);
-				}
+				drawLine(x, y, x + 1, y + dy);
+				dy += drawElementsUnder(child, x + 1, y + dy);
 			}
 		}
 
@@ -232,6 +223,12 @@ public class ActionTreeController implements ActionTreeNavListener, ModelChangeL
 	 *            Die y-Position an der gezeichnet werden soll
 	 */
 	private void drawElementAt(ActionTreeElement element, int x, int y) {
+		if (orientation != Configuration.ORIENTATION_PORTRAIT) {
+			int temp = x;
+			x = y;
+			y = temp;
+			
+		}
 		ActionTreeElementView view = new ActionElement(this.context, null, element);
 
 		if (element.isMarked()) {
@@ -253,6 +250,7 @@ public class ActionTreeController implements ActionTreeNavListener, ModelChangeL
 					AT_RASTER_SIZE);
 			viewLayoutParams.topMargin = x * AT_RASTER_SIZE;
 			viewLayoutParams.leftMargin = y * AT_RASTER_SIZE;
+			
 			this.activeElementView.setLayoutParams(viewLayoutParams);
 		} else {
 			RelativeLayout.LayoutParams viewLayoutParams = new RelativeLayout.LayoutParams(AT_RASTER_SIZE,
@@ -285,6 +283,15 @@ public class ActionTreeController implements ActionTreeNavListener, ModelChangeL
 	 *            Endposition y-Richtung
 	 */
 	private void drawLine(int fromX, int fromY, int toX, int toY) {
+		if (orientation != Configuration.ORIENTATION_PORTRAIT) {
+			int tempFrom = fromX;
+			int tempTo = toX;
+			fromX = fromY;
+			fromY = tempFrom;
+			toX = toY;
+			toY = tempTo;
+			
+		}
 		BranchingLine branchingLine = new BranchingLine(this.context, fromX * AT_RASTER_SIZE, fromY * AT_RASTER_SIZE,
 				(toX * AT_RASTER_SIZE + AT_RASTER_SIZE / 2), (toY * AT_RASTER_SIZE));
 		RelativeLayout.LayoutParams branchingLineLayoutParams = new RelativeLayout.LayoutParams((toY * AT_RASTER_SIZE
