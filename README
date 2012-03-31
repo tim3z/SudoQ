@@ -12,7 +12,7 @@ Eclipse -> http://www.eclipse.org/
 
 To run the app on the emulator or a phone you have to … 
 … add the sudoq-model to your sudoq-app project's buildpath in case eclipse got that wrong.
-… create an assets folder within the sudoq-app project and put the sub-dirs from the Sudokus folder which contains pre-generated (by our generator :) Sudokus in it.
+… create an assets folder called assets within the sudoq-app project and put the  Sudokus folder which contains pre-generated Sudokus in it.
 
 WORKING THE CODE
 
