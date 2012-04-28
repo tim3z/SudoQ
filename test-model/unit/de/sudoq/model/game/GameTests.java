@@ -140,6 +140,31 @@ public class GameTests {
 		assertTrue(game.equals(game2));
 	}
 
+	// Regression Test for Issue-89
+	@Test
+	public void testFinishedAttributeConsistency() {
+		SudokuBuilder sb = new SudokuBuilder(SudokuTypes.standard9x9);
+		for (int i = 0; i < 9; i++) {
+			for (int j = 0; j < 9; j++) {
+				sb.addSolution(Position.get(i, j), 1);
+			}
+		}
+		Game game = new Game(1, sb.createSudoku());
+		assertTrue(game.solveAll());
+		assertTrue(game.isFinished());
+
+		Game game2 = new Game();
+		game2.fillFromXml(game.toXmlTree());
+		assertTrue(game2.isFinished());
+
+		game2.undo();
+		assertTrue(game2.isFinished());
+
+		game = new Game();
+		game.fillFromXml(game2.toXmlTree());
+		assertTrue(game.isFinished());
+	}
+
 	@Test
 	public void testAssistanceSetting() {
 		Game game = new Game(2, new SudokuBuilder(SudokuTypes.standard9x9).createSudoku());
