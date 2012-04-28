@@ -15,9 +15,6 @@ import org.junit.Test;
 import de.sudoq.model.actionTree.ActionTreeElement;
 import de.sudoq.model.actionTree.NoteActionFactory;
 import de.sudoq.model.actionTree.SolveActionFactory;
-import de.sudoq.model.game.AssistanceSet;
-import de.sudoq.model.game.Assistances;
-import de.sudoq.model.game.Game;
 import de.sudoq.model.solverGenerator.Generator;
 import de.sudoq.model.solverGenerator.GeneratorCallback;
 import de.sudoq.model.sudoku.Field;
@@ -352,5 +349,66 @@ public class GameTests {
 		oldAssistanceCost = game.getAssistancesCost();
 		assertTrue(unsolvedField.getCurrentValue() == Field.EMPTYVAL);
 		assertTrue(game.getCurrentState().isCorrect());
+	}
+
+	// Regression Test for Issue-90
+	@Test
+	public void testAutoAdjustNotesForAutomaticSolving() {
+		SudokuBuilder sb = new SudokuBuilder(SudokuTypes.standard9x9);
+		for (int i = 0; i < 9; i++) {
+			for (int j = 0; j < 9; j++) {
+				sb.addSolution(Position.get(i, j), 1);
+			}
+		}
+		Game game = new Game(2, sb.createSudoku());
+		AssistanceSet as = new AssistanceSet();
+		as.setAssistance(Assistances.autoAdjustNotes);
+		game.setAssistances(as);
+
+		for (int i = 0; i < 9; i++) {
+			for (int j = 0; j < 9; j++) {
+				game.addAndExecute(new NoteActionFactory().createAction(1, game.getSudoku().getField(Position.get(i, j))));
+				assertTrue(game.getSudoku().getField(Position.get(i, j)).isNoteSet(1));
+			}
+		}
+
+		assertTrue(game.solveField());
+		boolean done = false;
+		int x = -1;
+		int y = -1;
+		for (int i = 0; i < 9 && !done; i++) {
+			for (int j = 0; j < 9 && !done; j++) {
+				if (game.getSudoku().getField(Position.get(i, j)).getCurrentValue() == 1) {
+					done = true;
+					x = i;
+					y = j;
+				}
+			}
+		}
+		assertTrue(done);
+
+		for (int i = 0; i < 9; i++) {
+			assertFalse(game.getSudoku().getField(Position.get(x, i)).isNoteSet(1));
+			assertFalse(game.getSudoku().getField(Position.get(i, y)).isNoteSet(1));
+		}
+		for (int i = 0; i < 3; i++) {
+			for (int j = 0; j < 3; j++) {
+				assertFalse(game.getSudoku().getField(Position.get((x - (x % 3) + i), (y - (y % 3) + j))).isNoteSet(1));
+			}
+		}
+
+		x = (x + 3) % 9;
+		y = (y + 3) % 9;
+		game.solveField(game.getSudoku().getField(Position.get(x, y)));
+
+		for (int i = 0; i < 9; i++) {
+			assertFalse(game.getSudoku().getField(Position.get(x, i)).isNoteSet(1));
+			assertFalse(game.getSudoku().getField(Position.get(i, y)).isNoteSet(1));
+		}
+		for (int i = 0; i < 3; i++) {
+			for (int j = 0; j < 3; j++) {
+				assertFalse(game.getSudoku().getField(Position.get((x - (x % 3) + i), (y - (y % 3) + j))).isNoteSet(1));
+			}
+		}
 	}
 }
