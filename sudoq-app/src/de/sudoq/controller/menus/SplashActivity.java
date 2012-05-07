@@ -144,7 +144,6 @@ public class SplashActivity extends SudoqActivity {
 	@Override
 	public void onPause() {
 		super.onPause();
-		splashThread.interrupt();
 	}
 
 	/**
