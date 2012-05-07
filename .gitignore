@@ -31,4 +31,3 @@ test-app/gen
 test-app/coverage/
 tmp
 .metadata/
-test-robotium
