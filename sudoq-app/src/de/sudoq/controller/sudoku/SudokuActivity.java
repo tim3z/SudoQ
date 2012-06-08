@@ -603,12 +603,14 @@ public class SudokuActivity extends SudoqActivity implements OnClickListener, Ac
 				&& this.sudokuView.getCurrentFieldView().getField().isEmpty()) {
 			temp_items = new CharSequence[] { getString(R.string.sf_sudoku_assistances_solve_surrender),
 					getString(R.string.sf_sudoku_assistances_back_to_valid_state),
+					getString(R.string.sf_sudoku_assistances_back_to_bookmark),
 					getString(R.string.sf_sudoku_assistances_check),
 					getString(R.string.sf_sudoku_assistances_solve_random),
 					getString(R.string.sf_sudoku_assistances_solve_specific) };
 		} else {
 			temp_items = new CharSequence[] { getString(R.string.sf_sudoku_assistances_solve_surrender),
 					getString(R.string.sf_sudoku_assistances_back_to_valid_state),
+					getString(R.string.sf_sudoku_assistances_back_to_bookmark),
 					getString(R.string.sf_sudoku_assistances_check),
 					getString(R.string.sf_sudoku_assistances_solve_random) };
 		}
@@ -627,21 +629,23 @@ public class SudokuActivity extends SudoqActivity implements OnClickListener, Ac
 					break;
 				case 1:
 					SudokuActivity.this.game.goToLastCorrectState();
-					updateButtons();
 					break;
 				case 2:
+					SudokuActivity.this.game.goToLastBookmark();
+					break;
+				case 3:
 					if (SudokuActivity.this.game.checkSudoku()) {
 						Toast.makeText(SudokuActivity.this, R.string.toast_solved_correct, Toast.LENGTH_SHORT).show();
 					} else {
 						Toast.makeText(SudokuActivity.this, R.string.toast_solved_wrong, Toast.LENGTH_LONG).show();
 					}
 					break;
-				case 3:
+				case 4:
 					if (!SudokuActivity.this.sudokuController.onSolveOne()) {
 						Toast.makeText(SudokuActivity.this, R.string.toast_solved_wrong, Toast.LENGTH_SHORT).show();
 					}
 					break;
-				case 4:
+				case 5:
 					if (SudokuActivity.this.sudokuView.getCurrentFieldView() != null
 							&& !SudokuActivity.this.sudokuController.onSolveCurrent(SudokuActivity.this.sudokuView.getCurrentFieldView().getField())) {
 						Toast.makeText(SudokuActivity.this, R.string.toast_solved_wrong, Toast.LENGTH_SHORT).show();

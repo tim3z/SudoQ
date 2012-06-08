@@ -114,6 +114,7 @@
     <string name="sf_sudoku_assistances_solve_random">Zufälliges Feld lösen</string>
     <string name="sf_sudoku_assistances_solve_surrender">Aufgeben</string>
     <string name="sf_sudoku_assistances_back_to_valid_state">Zurück zum letzten korrekten Stand</string>
+    <string name="sf_sudoku_assistances_back_to_bookmark">Zurück zum letzten Lesezeichen</string>
     <string name="sf_sudoku_title_gesture_input">Symboleingabe durch Geste</string>
     <string name="sf_sudoku_title_action_tree">Aktionsverlauf</string>
         

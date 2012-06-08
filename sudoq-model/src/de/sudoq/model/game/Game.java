@@ -415,6 +415,17 @@ public class Game implements Xmlable {
         }
         getCurrentState().markCorrect();
     }
+    
+    /**
+     * Geht zurück zum letzten Lesezeichen im Aktionsbaum. Ist der aktuelle Zustand bereits mit einem Lesezeichen versehen, so wird
+     * nichts getan. Befindet sich vor dem aktuellen Zustand kein markierter Zustand, so wird zum Wurzelzustand zurückgegangen.
+     */
+    public void goToLastBookmark() {
+        while (!this.stateHandler.getCurrentState().equals(this.stateHandler.getActionTree().getRoot()) 
+        		&& !this.stateHandler.getCurrentState().isMarked()) {
+            undo();
+        }
+    }
 
     /**
      * Gibt true zurück, falls die spezifizierte Hilfestellung verfügbar ist, false falls nicht oder falls die
