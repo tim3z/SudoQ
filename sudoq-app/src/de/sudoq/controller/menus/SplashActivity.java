@@ -19,7 +19,9 @@ import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.ActivityInfo;
 import android.content.res.AssetManager;
+import android.content.res.Configuration;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
@@ -76,6 +78,7 @@ public class SplashActivity extends SudoqActivity {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 		setContentView(R.layout.splash);
 
 		// If there is no profile initialize one
@@ -154,6 +157,15 @@ public class SplashActivity extends SudoqActivity {
 		super.onBackPressed();
 		splashThread.interrupt();
 		finish();
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void onConfigurationChanged(Configuration newConfig) {
+		super.onConfigurationChanged(newConfig);
+		setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 	}
 
 	/**
