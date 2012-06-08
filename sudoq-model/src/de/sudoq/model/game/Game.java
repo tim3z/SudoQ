@@ -396,7 +396,7 @@ public class Game implements Xmlable {
             unsolvedFields.remove(nr);
         }
 
-        this.assistancesCost += Integer.MAX_VALUE / 2;
+        this.assistancesCost += Integer.MAX_VALUE / 80;
         return true;
         /*
          * if (solver.solveAll(false, false, false) != null) { for (Field f : unsolvedFields) { this.addAndExecute(new
