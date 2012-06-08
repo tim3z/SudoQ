@@ -29,7 +29,8 @@
 	<string name="sf_tutorial_assistances_passive_description1">L’aide passive peut être activée dans le profil ou encore au début d’une nouvelle partie.
 	                                                            Cette aide ne doit pas être appelée au cours de la partie, et ne peut de ce fait pas être activée ou désactivée durant le jeu.</string>
 
-<!--d--><string name = "sf_tutorial_assistances_description2">Mais: L’activation d’une assistance passive ou l’utilisation d’une aide active diminue le highscore</string>
+<!--d--><string name = "sf_tutorial_assistances_description2">Mais: L’activation d’une assistance passive ou l’utilisation d’une aide active diminue le highscore. En utilisant une aide a un effet 
+			sur le highscore égal à besoin plus de temps pour résoudre le sudoku, de sorte que les aides sont présentées au fil du temps nécessaire supplémentaire derrière le temps de jeu lui-même.</string>
 	<string name="sf_tutorial_assistances_passive_markrowcolumn_title">Sélectionner la ligne/la colonne</string>
 	<string name="sf_tutorial_assistances_passive_markrowcolumn_description1">Si il s’agit d’une aide active, alors toutes les cases de la ligne et de la colonne sélectionnées sont mises en évidence.</string>
 	<string name="sf_tutorial_assistances_passive_autoadjustnotes_title">Adapter les remarques automatiquement</string>
