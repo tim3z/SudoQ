@@ -307,7 +307,14 @@ public class SudokuActivity extends SudoqActivity implements OnClickListener, Ac
 	public void onRestoreInstanceState(Bundle state) {
 
 		if (state.getBoolean(SAVE_ACTION_TREE_SHOWN + "")) {
-			toogleActionTree();
+			ViewTreeObserver vto = sudokuView.getViewTreeObserver();
+			vto.addOnGlobalLayoutListener(new OnGlobalLayoutListener() {
+				public void onGlobalLayout() {
+					toogleActionTree();
+					ViewTreeObserver obs = sudokuView.getViewTreeObserver();
+					obs.removeGlobalOnLayoutListener(this);
+				}
+			});
 		}
 		if (state.getInt(SAVE_FIELD_X + "") != -1) {
 			this.sudokuView.getSudokuFieldViews()[state.getInt(SAVE_FIELD_X + "")][state.getInt(SAVE_FIELD_Y + "")].onTouchEvent(null);
