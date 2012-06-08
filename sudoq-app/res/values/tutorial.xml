@@ -20,7 +20,8 @@
 	<string name="sf_tutorial_assistances_description1">There are several assistances available to make it easier to solve a sudoku.
 	    These assistances can be classified as "passive" and "active" assistances.</string>
 	<string name = "sf_tutorial_assistances_description2">But: Activating a passive assistance or using an active assistance implies 
-	    your highscore to be lowered.</string>
+	    your highscore to be lowered. Using an assistance has an effect on the highscore equal to needing more time to solve the
+	    sudoku, so the assistances are presented as additional needed time behind the game time itself.</string>
 	 
 	<string name="sf_tutorial_assistances_passive_title">Passive assistances</string>
 	<string name="sf_tutorial_assistances_passive_description1">Passive assistances are those that can be activated in the profile or before

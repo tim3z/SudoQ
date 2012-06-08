@@ -426,7 +426,7 @@ public class SudokuActivity extends SudoqActivity implements OnClickListener, Ac
 	 */
 	private void inflateViewAndButtons() {
 		this.timeView = (TextView) findViewById(R.id.sudoku_time);
-		this.timeView.setText(getTimeString());
+		timeView.setText(getGameTimeString() + " (+ " + getAssistancesTimeString() + ")");
 
 		this.sudokuScrollView = (FullScrollLayout) findViewById(R.id.sudoku_field);
 		this.sudokuView = new SudokuLayout(this);
@@ -723,17 +723,30 @@ public class SudokuActivity extends SudoqActivity implements OnClickListener, Ac
 		this.timeHandler.removeCallbacks(timeUpdate);
 	}
 
+	protected String getAssistancesTimeString() {
+		return getTimeString(game.getAssistancesTimeCost());
+	}
+	
 	/**
 	 * Gibt die vergangene Zeit als formatierten String zurück.
 	 * 
 	 * @return Den String für die Zeitanzeige
 	 */
-	protected String getTimeString() {
-		Date time = new Date();
-		time.setMinutes(game.getTime() / 60);
-		time.setSeconds(game.getTime() % 60);
-		String res = new SimpleDateFormat("mm:ss").format(time);
-		return res;
+	protected String getGameTimeString() {
+		return getTimeString(game.getTime());
+	}
+	
+	/**
+	 * Returns a string in the format "mm:ss" implied by the specified time in seconds.
+	 * @param time the time to format in seconds
+	 * @return a string representing the specified time in format "mm:ss"
+	 */
+	private String getTimeString(int time) {
+		Date res = new Date();
+		res.setMinutes(time / 60);
+		res.setSeconds(time % 60);
+		String returnString = new SimpleDateFormat("mm:ss").format(res);
+		return returnString;
 	}
 
 	/**
@@ -771,7 +784,7 @@ public class SudokuActivity extends SudoqActivity implements OnClickListener, Ac
 	private String getStatisticsString() {
 		StringBuilder sb = new StringBuilder();
 		sb.append(getString(R.string.dialog_won_statistics) + ":\n\n");
-		sb.append(getString(R.string.dialog_won_timeneeded) + ": " + getTimeString() + "\n");
+		sb.append(getString(R.string.dialog_won_timeneeded) + ": " + getGameTimeString() + "\n");
 		sb.append(getString(R.string.dialog_won_score) + ": " + game.getScore());
 		return sb.toString();
 	}
@@ -782,7 +795,7 @@ public class SudokuActivity extends SudoqActivity implements OnClickListener, Ac
 	private Runnable timeUpdate = new Runnable() {
 		public void run() {
 			game.addTime(1);
-			timeView.setText(getTimeString());
+			timeView.setText(getGameTimeString() + " (+ " + getAssistancesTimeString() + ")");
 			timeHandler.postDelayed(this, 1000);
 		}
 	};

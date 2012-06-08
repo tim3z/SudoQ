@@ -164,7 +164,11 @@ public class Game implements Xmlable {
             break;
         }
 
-        return (int) (scoreFactor * 10 / (this.time / 60.0f + this.assistancesCost));
+        return (int) (scoreFactor * 10 / ((this.time + getAssistancesTimeCost()) / 60.0f));
+    }
+    
+    public int getAssistancesTimeCost() {
+    	return this.assistancesCost * 60;
     }
 
     /**

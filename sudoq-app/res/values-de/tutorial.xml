@@ -21,7 +21,9 @@
 	<string name="sf_tutorial_assistances_description1">Es stehen mehrere Hilfestellungen zur Verfügung die es einfacher machen, ein Sudoku zu lösen.
 	    Diese Hilfestellungen können in "passive" und "aktive" Hilfestellungen unterteilt werden.</string>
 	    <string name = "sf_tutorial_assistances_description2">Aber: Das Aktivieren einer passiven bzw. das Benutzen einer aktiven
-	        Hilfestellung führt dazu, dass sich der Highscore verringert.</string>
+	        Hilfestellung führt dazu, dass sich der Highscore verringert. Das Benutzen einer Hilfestellung hat einen ähnlichen Effekt wie
+	        das Benötigen von zusätzlicher Zeit zum Lösen des Sudokus, daher werden die Hilfestellungen als zusätzliche Zeit hinter der
+	        Spielzeit angezeigt.</string>
 	 
 	<string name="sf_tutorial_assistances_passive_title">Passive Hilfestellungen</string>
 	<string name="sf_tutorial_assistances_passive_description1">Passive Hilfestellungen können im Profil oder vor Beginn eines neuen Spiels aktiviert werden. 
