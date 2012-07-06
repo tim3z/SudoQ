@@ -150,5 +150,8 @@
     <string name="sudokuloading_delete_finished">Effacer les sudokus résolus</string>
     <string name="sudokuloading_delete_specific">Effacer un certain sudoku</string>
     <string name="sf_loading_back">Retour</string>
+    
+    <!--  Defaults -->
+    <string name="default_user_name">Profil 1</string>
 
 </resources>

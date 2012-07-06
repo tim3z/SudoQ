@@ -80,14 +80,16 @@ public class SplashActivity extends SudoqActivity {
 		super.onCreate(savedInstanceState);
 		setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 		setContentView(R.layout.splash);
-
+		
 		// If there is no profile initialize one
 		if (FileManager.getNumberOfProfiles() == 0) {
-			String name = getUserName();
-			if (name != null) {
-				Profile.getInstance().setName(name);
-				Log.d(LOG_TAG, name);
-			}
+			// REMOVED: No need for account lookup rights any more 
+//			String name = getUserName();
+//			if (name != null) {
+//				Profile.getInstance().setName(name);
+//				Log.d(LOG_TAG, name);
+//			}
+			Profile.getInstance().setName(getString(R.string.default_user_name));
 		}
 
 		// Restore waited time after interruption or set it to 0
@@ -173,6 +175,7 @@ public class SplashActivity extends SudoqActivity {
 	 * 
 	 * @return Der Benutzername des Google-Accounts
 	 */
+	@SuppressWarnings("unused")
 	private String getUserName() {
 		AccountManager manager = AccountManager.get(this);
 		Account[] accounts = manager.getAccountsByType("com.google");

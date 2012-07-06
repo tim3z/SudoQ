@@ -182,5 +182,8 @@
     <!-- Relative Path -->
     <string name="path_rel_profiles">profiles</string>
     <string name="path_rel_sudokus">sudokus</string>
+    
+    <!--  Defaults -->
+    <string name="default_user_name">Profile 1</string>
         
 </resources>
