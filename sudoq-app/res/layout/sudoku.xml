@@ -29,7 +29,7 @@
                 android:layout_height="wrap_content"
                 android:gravity="left"
                 android:textColor="@android:color/white"
-                android:textAppearance="@android:style/TextAppearance.Small" />
+                android:textSize="10dp" />
 
             <TextView
                 android:id="@+id/sudoku_time"
@@ -37,7 +37,7 @@
                 android:layout_height="wrap_content"
                 android:gravity="right"
                 android:textColor="@android:color/white"
-                android:textAppearance="@android:style/TextAppearance.Small" />
+                android:textSize="10dp" />
         </LinearLayout>
 
         <LinearLayout
