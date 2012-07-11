@@ -18,7 +18,7 @@
         <LinearLayout
             android:id="@+id/sudoku_time_border"
             android:layout_width="fill_parent"
-            android:layout_height="15dp"
+            android:layout_height="wrap_content"
             android:paddingLeft="5dp"
             android:paddingRight="5dp"
             android:orientation="horizontal"
@@ -29,7 +29,7 @@
                 android:layout_height="wrap_content"
                 android:gravity="left"
                 android:textColor="@android:color/white"
-                android:textSize="10dp" />
+                android:textAppearance="@android:style/TextAppearance.Small" />
 
             <TextView
                 android:id="@+id/sudoku_time"
@@ -37,7 +37,7 @@
                 android:layout_height="wrap_content"
                 android:gravity="right"
                 android:textColor="@android:color/white"
-                android:textSize="10dp" />
+                android:textAppearance="@android:style/TextAppearance.Small" />
         </LinearLayout>
 
         <LinearLayout
@@ -47,9 +47,9 @@
             
         	<LinearLayout
 	            android:id="@+id/sudoku_border"
-            	android:layout_width="wrap_content"
+            	android:layout_width="fill_parent"
             	android:layout_height="fill_parent"
-            	android:layout_weight="1.0"
+            	android:layout_weight="1"
             	android:orientation="vertical" >
 
 	            <de.sudoq.view.FullScrollLayout
@@ -69,76 +69,91 @@
             	android:background="@android:color/white" />
 
         	<LinearLayout
-	            android:layout_width="130dp"
+	            android:layout_weight="2.5"
+	            android:layout_width="fill_parent"
             	android:layout_height="fill_parent"
             	android:orientation="vertical"
             	android:background="#282828" >
-	
-            	<TableLayout
-	                android:id="@+id/controls"
+	            
+        	    <LinearLayout 
+	               android:id="@+id/controls"
                		android:layout_width="fill_parent"
                		android:layout_height="wrap_content"
-               		android:orientation="horizontal"
-               		android:padding="5dp" >
-	               	
-                	<TableRow>
-	                  
-               			<ImageButton
-		                   	android:id="@+id/button_sudoku_undo"
-                   			android:padding="7dp"
-                   			android:scaleType="fitXY"
-                   			android:layout_width="40dp"
-                   			android:layout_height="40dp"
-                   			android:layout_margin="0dp"
-                   			android:onClick="onClick"
-                   			android:src="@drawable/undo" />
-		
-               			<ImageButton
-		                    android:id="@+id/button_sudoku_redo"
-                   			android:padding="7dp"
-                   			android:scaleType="fitXY"
-                   			android:layout_width="40dp"
-                   			android:layout_height="40dp"
-                   			android:layout_margin="0dp"
-                   			android:onClick="onClick"
-                   			android:src="@drawable/redo" />
-	               		
-                		<ImageButton
-	                    	android:id="@+id/button_sudoku_actionTree"
-                    		android:padding="7dp"
-                    		android:scaleType="fitXY"
-                    		android:layout_width="40dp"
-                    		android:layout_height="40dp"
-                    		android:layout_margin="0dp"
-                    		android:onClick="onClick"
-                    		android:src="@drawable/action_tree" />
-               		</TableRow>
+               		android:orientation="vertical">
+	            
+        	    	<LinearLayout
+	            		android:orientation="horizontal"
+            			android:gravity="center_horizontal"
+            			android:layout_width="fill_parent"
+            			android:layout_height="wrap_content"
+            			android:paddingLeft="5dp">
 				
-               		<TableRow>
-			
-                		<ImageButton
-	                   		android:id="@+id/button_sudoku_help"
+                		<de.sudoq.view.SquareImageButton
+		                	android:id="@+id/button_sudoku_help"
                    			android:padding="7dp"
                     		android:scaleType="fitXY"
-                    		android:layout_width="40dp"
-                    		android:layout_height="40dp"
+                    		android:layout_width="fill_parent"
+                    		android:layout_height="1dp"
+                    		android:layout_weight="1"
                     		android:layout_margin="0dp"
                     		android:onClick="onClick"
                     		android:src="@drawable/help" />
-	
-                		<ImageButton
-                    		android:id="@+id/button_sudoku_toggle_gesture"
+	                		
+                		<de.sudoq.view.SquareImageButton
+		                   	android:id="@+id/button_sudoku_actionTree"
                     		android:padding="7dp"
                     		android:scaleType="fitXY"
-                    		android:layout_width="40dp"
-                    		android:layout_height="40dp"
+                    		android:layout_width="fill_parent"
+                    		android:layout_height="1dp"
+                    		android:layout_weight="1"
+                    		android:layout_margin="0dp"
+                    		android:onClick="onClick"
+                    		android:src="@drawable/action_tree" />
+					</LinearLayout>
+					 
+					<LinearLayout
+	            		android:orientation="horizontal"
+            			android:layout_gravity="center_horizontal"
+            			android:layout_width="fill_parent"
+            			android:layout_height="wrap_content"
+            			android:paddingLeft="5dp">
+		                  
+               			<de.sudoq.view.SquareImageButton
+			              	android:id="@+id/button_sudoku_undo"
+                   			android:padding="7dp"
+                   			android:scaleType="fitXY"
+                   			android:layout_width="fill_parent"
+                   			android:layout_height="1dp"
+                   			android:layout_weight="1"
+                   			android:layout_margin="0dp"
+                   			android:onClick="onClick"
+                   			android:src="@drawable/undo" />
+			
+               			<de.sudoq.view.SquareImageButton
+			                android:id="@+id/button_sudoku_redo"
+                   			android:padding="7dp"
+                   			android:scaleType="fitXY"
+                   			android:layout_width="fill_parent"
+                   			android:layout_height="1dp"
+                   			android:layout_weight="1"
+                   			android:layout_margin="0dp"
+                   			android:onClick="onClick"
+                   			android:src="@drawable/redo" />
+		               	
+               			<de.sudoq.view.SquareImageButton
+	                    	android:id="@+id/button_sudoku_toggle_gesture"
+                    		android:padding="7dp"
+                    		android:scaleType="fitXY"
+                    		android:layout_width="fill_parent"
+                    		android:layout_height="1dp"
+                    		android:layout_weight="1"
                     		android:layout_margin="0dp"
                     		android:onClick="onClick"
                     		android:src="@drawable/gesture_button_selector" />
+	               	
+               		</LinearLayout>
 	
-        			</TableRow>
-	        		
-        		</TableLayout>
+                </LinearLayout>
 	
             	<de.sudoq.view.VirtualKeyboardLayout
 	                android:id="@+id/virtual_keyboard"
@@ -146,7 +161,7 @@
                 	android:layout_height="fill_parent"
                 	android:gravity="center"
                 	android:orientation="vertical"
-                	android:padding="8dp" >
+                	android:padding="5dp" >
             	</de.sudoq.view.VirtualKeyboardLayout>
         	</LinearLayout>
     	</LinearLayout>
