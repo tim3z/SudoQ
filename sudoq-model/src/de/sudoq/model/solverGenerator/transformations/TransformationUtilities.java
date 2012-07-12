@@ -77,7 +77,7 @@ public final class TransformationUtilities {
 	 */
 	protected static void inBlockRowPermutation(Sudoku sudoku) {
 		rotate90(sudoku);
-		TransformationUtilities.inBlockCollumnPermutation(sudoku, sudoku.getSudokuType().getBlockSize().getY());
+		TransformationUtilities.inBlockCollumnPermutation(sudoku, (int) (sudoku.getSudokuType().getSize().getY() / Math.sqrt(sudoku.getSudokuType().getNumberOfSymbols())));
 		rotate270(sudoku);
 	}
 
@@ -88,7 +88,7 @@ public final class TransformationUtilities {
 	 *            Das Sudoku auf dem die Permutation ausgeführt werden soll
 	 */
 	protected static void inBlockCollumnPermutation(Sudoku sudoku) {
-		inBlockCollumnPermutation(sudoku, sudoku.getSudokuType().getBlockSize().getX());
+		inBlockCollumnPermutation(sudoku, (int) (sudoku.getSudokuType().getSize().getX() / Math.sqrt(sudoku.getSudokuType().getNumberOfSymbols())));
 	}
 
 	/**
@@ -98,7 +98,7 @@ public final class TransformationUtilities {
 	 *            Das Sudoku auf dem die Permutation ausgeführt werden soll
 	 */
 	protected static void horizontalBlockPermutation(Sudoku sudoku) {
-		int collumnsPerBlock = sudoku.getSudokuType().getBlockSize().getX();
+		int collumnsPerBlock = (int) (sudoku.getSudokuType().getSize().getX() / Math.sqrt(sudoku.getSudokuType().getNumberOfSymbols()));
 		int numberOfHorizontalBlocks = sudoku.getSudokuType().getSize().getX() / collumnsPerBlock;
 
 		rotate_horizontally_By1(sudoku, numberOfHorizontalBlocks, collumnsPerBlock);
@@ -113,7 +113,7 @@ public final class TransformationUtilities {
 	 *            Das Sudoku auf dem die Permutation ausgeführt werden soll
 	 */
 	protected static void verticalBlockPermutation(Sudoku sudoku) {
-		int rowsPerBlock = sudoku.getSudokuType().getBlockSize().getY();
+		int rowsPerBlock = (int) (sudoku.getSudokuType().getSize().getY() / Math.sqrt(sudoku.getSudokuType().getNumberOfSymbols()));
 		int numberOfVertikalBlocks = sudoku.getSudokuType().getSize().getY() / rowsPerBlock;
 
 		new Rotate90().permutate(sudoku);
@@ -184,8 +184,8 @@ public final class TransformationUtilities {
 	 *            Anzahl an Spalten pro Block
 	 */
 	private static void inBlockCollumnPermutation(Sudoku sudoku, int blockWidth) {
-		int numberOfHorizontalBlocks = sudoku.getSudokuType().getSize().getX()
-				/ sudoku.getSudokuType().getBlockSize().getX();
+		int numberOfHorizontalBlocks = (int) (sudoku.getSudokuType().getSize().getX()
+				/ sudoku.getSudokuType().getSize().getX() / Math.sqrt(sudoku.getSudokuType().getNumberOfSymbols()));
 
 		for (int i = 0; i < numberOfHorizontalBlocks; i++) {
 			for (int j = 0; j < blockWidth; j++) {

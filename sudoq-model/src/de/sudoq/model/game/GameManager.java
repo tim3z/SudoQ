@@ -18,7 +18,7 @@ import de.sudoq.model.profile.Profile;
 import de.sudoq.model.sudoku.Sudoku;
 import de.sudoq.model.sudoku.SudokuManager;
 import de.sudoq.model.sudoku.complexity.Complexity;
-import de.sudoq.model.sudoku.sudokuTypes.SudokuTypes;
+import de.sudoq.model.sudoku.sudokuTypes.SudokuTypeNames;
 import de.sudoq.model.xml.GameXmlHandler;
 import de.sudoq.model.xml.XmlAttribute;
 import de.sudoq.model.xml.XmlHandler;
@@ -87,7 +87,7 @@ public class GameManager {
 	 * @see GameType
 	 * @see Game
 	 */
-	public Game newGame(SudokuTypes type, Complexity complexity, GameType gameType, AssistanceSet assists) {
+	public Game newGame(int type, Complexity complexity, GameType gameType, AssistanceSet assists) {
 		Sudoku sudoku = SudokuManager.getNewSudoku(type, complexity);
 
 		// switch (gameType) {
@@ -112,7 +112,7 @@ public class GameManager {
 		XmlTree games = getGamesXml();
 		XmlTree gameTree = new XmlTree("game");
 		gameTree.addAttribute(new XmlAttribute(ID, Integer.toString(game.getId())));
-		gameTree.addAttribute(new XmlAttribute(SUDOKU_TYPE, Integer.toString(game.getSudoku().getSudokuType().getEnumType().ordinal())));
+		gameTree.addAttribute(new XmlAttribute(SUDOKU_TYPE, Integer.toString(game.getSudoku().getSudokuType().getId())));
 		gameTree.addAttribute(new XmlAttribute(COMPLEXITY, Integer.toString(game.getSudoku().getComplexity().ordinal())));
 		gameTree.addAttribute(new XmlAttribute(PLAYED_AT, new SimpleDateFormat(GameData.dateFormat).format(new Date())));
 
@@ -153,7 +153,7 @@ public class GameManager {
 		for (XmlTree game : getGamesXml()) {
 			list.add(new GameData(Integer.parseInt(game.getAttributeValue(ID)),
 					game.getAttributeValue(PLAYED_AT), Boolean.parseBoolean(game.getAttributeValue(FINISHED)),
-					SudokuTypes.values()[Integer.parseInt(game.getAttributeValue(SUDOKU_TYPE))],
+					SudokuTypeNames.getInstance().getName(Integer.parseInt(game.getAttributeValue(SUDOKU_TYPE))),
 					Complexity.values()[Integer.parseInt(game.getAttributeValue(COMPLEXITY))]));
 
 		}

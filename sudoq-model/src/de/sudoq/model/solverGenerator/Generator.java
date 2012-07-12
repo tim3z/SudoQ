@@ -23,10 +23,6 @@ import de.sudoq.model.sudoku.Sudoku;
 import de.sudoq.model.sudoku.SudokuBuilder;
 import de.sudoq.model.sudoku.complexity.Complexity;
 import de.sudoq.model.sudoku.complexity.ComplexityConstraint;
-import de.sudoq.model.sudoku.sudokuTypes.StandardSudokuType;
-import de.sudoq.model.sudoku.sudokuTypes.StandardSudokuType16x16;
-import de.sudoq.model.sudoku.sudokuTypes.SudokuTypes;
-import de.sudoq.model.sudoku.sudokuTypes.TypeStandard;
 
 /**
  * Diese Klasse stellt verschiedene Methoden zum Erstellen eines validen, neuen
@@ -78,16 +74,16 @@ public class Generator {
 	 * @return true, falls ein leeres Sudoku erzeugt und der Warteschlange
 	 *         hinzugefügt werden konnte, false andernfalls
 	 */
-	public boolean generate(SudokuTypes type, Complexity complexity, GeneratorCallback callbackObject) {
-		if (type == null || complexity == null || callbackObject == null)
+	public boolean generate(int type, Complexity complexity, GeneratorCallback callbackObject) {
+		if (type == -1 || complexity == null || callbackObject == null)
 			return false;
 
 		// Create sudoku
 		Sudoku sudoku = new SudokuBuilder(type).createSudoku();
 		sudoku.setComplexity(complexity);
 
-		if (sudoku.getSudokuType() instanceof StandardSudokuType
-				|| sudoku.getSudokuType() instanceof StandardSudokuType16x16) {
+		if (sudoku.getSudokuType().getId() == 0 // 9x9 + 16x16
+				|| sudoku.getSudokuType().getId() == 1) {
 			new Thread(new SudokuGenerationStandardType(sudoku, callbackObject, random)).start();
 		} else {
 			new Thread(new SudokuGeneration(sudoku, callbackObject, random)).start();

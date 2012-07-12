@@ -32,7 +32,7 @@ import de.sudoq.R;
 import de.sudoq.model.files.FileManager;
 import de.sudoq.model.game.GameData;
 import de.sudoq.model.sudoku.complexity.Complexity;
-import de.sudoq.model.sudoku.sudokuTypes.SudokuTypes;
+import de.sudoq.model.sudoku.sudokuTypes.SudokuTypeNames;
 
 /**
  * Adapter für die Anzeige aller Spiele des Spielers
@@ -42,7 +42,6 @@ public class SudokuLoadingAdapter extends ArrayAdapter<GameData> {
 	private static final String LOG_TAG = SudokuLoadingAdapter.class.getSimpleName();
 	private final Context context;
 	private final List<GameData> gameDatas;
-	private String[] typeStrings;
 	private String[] complexityStrings;
 
 	/**
@@ -57,7 +56,6 @@ public class SudokuLoadingAdapter extends ArrayAdapter<GameData> {
 		super(context, R.layout.sudokuloadingitem, games);
 		this.context = context;
 		this.gameDatas = games;
-		initialiseTypes();
 		initialiseComplexities();
 	}
 
@@ -96,7 +94,7 @@ public class SudokuLoadingAdapter extends ArrayAdapter<GameData> {
 			Log.w(LOG_TAG, this.context.getString(R.string.error_thumbnail_load));
 		}
 		
-		sudokuType.setText(typeStrings[gameDatas.get(position).getType().ordinal()]);
+		sudokuType.setText(gameDatas.get(position).getType());
 		sudokuComplexity.setText(complexityStrings[gameDatas.get(position).getComplexity().ordinal()]);
 
 		TimeZone tz = TimeZone.getDefault();
@@ -119,20 +117,6 @@ public class SudokuLoadingAdapter extends ArrayAdapter<GameData> {
 		return rowView;
 	}
 
-	private void initialiseTypes() {
-		typeStrings = new String[SudokuTypes.values().length];
-		typeStrings[SudokuTypes.standard4x4.ordinal()] = context.getString(R.string.sudoku_type_standard_4x4);
-		typeStrings[SudokuTypes.standard6x6.ordinal()] = context.getString(R.string.sudoku_type_standard_6x6);
-		typeStrings[SudokuTypes.standard9x9.ordinal()] = context.getString(R.string.sudoku_type_standard_9x9);
-		typeStrings[SudokuTypes.standard16x16.ordinal()] = context.getString(R.string.sudoku_type_standard_16x16);
-		typeStrings[SudokuTypes.Xsudoku.ordinal()] = context.getString(R.string.sudoku_type_xsudoku);
-		typeStrings[SudokuTypes.HyperSudoku.ordinal()] = context.getString(R.string.sudoku_type_hyper);
-		typeStrings[SudokuTypes.stairstep.ordinal()] = context.getString(R.string.sudoku_type_stairstep_9x9);
-		typeStrings[SudokuTypes.squigglya.ordinal()] = context.getString(R.string.sudoku_type_squiggly_a_9x9);
-		typeStrings[SudokuTypes.squigglyb.ordinal()] = context.getString(R.string.sudoku_type_squiggly_b_9x9);
-		typeStrings[SudokuTypes.samurai.ordinal()] = context.getString(R.string.sudoku_type_samurai);
-		
-	}
 
 	private void initialiseComplexities() {
 		complexityStrings = new String[Complexity.values().length];

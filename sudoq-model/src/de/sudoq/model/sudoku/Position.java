@@ -7,12 +7,21 @@
  */
 package de.sudoq.model.sudoku;
 
+import de.sudoq.model.xml.XmlAttribute;
+import de.sudoq.model.xml.XmlTree;
+import de.sudoq.model.xml.Xmlable;
+
 /**
  * Eine Position repräsentiert eine zweidimensionale, kartesische Koordinate.
  */
-public class Position {
+public class Position implements Xmlable {
 	/** Attributes */
-
+	
+	/**
+	 * Identifiziert, ob diese Position ein Flyweight ist und somit nicht geändert werden darf.
+	 */
+	private boolean fixed;
+	
 	/**
 	 * Die x-Koordinate der Position
 	 */
@@ -41,9 +50,10 @@ public class Position {
 	 * @throws IllegalArgumentException
 	 *             Wird geworfen, falls eine der Koordinaten kleiner als 0 ist
 	 */
-	private Position(int x, int y) {
+	public Position(int x, int y) {
 		this.x = x;
 		this.y = y;
+		this.fixed = true;
 	}
 
 	/**
@@ -69,7 +79,9 @@ public class Position {
 		if (x < 25 && y < 25) {
 			return positions[x][y];
 		} else {
-			return new Position(x, y);
+			Position pos = new Position(x, y);
+			pos.fixed = false;
+			return pos;
 		}
 	}
 
@@ -133,5 +145,26 @@ public class Position {
 	 */
 	public String toString() {
 		return this.x + ", " + this.y;
+	}
+
+	@Override
+	public XmlTree toXmlTree() {
+		XmlTree representation = new XmlTree("position");
+		representation.addAttribute(new XmlAttribute("x", "" + x));
+		representation.addAttribute(new XmlAttribute("y", "" + y));
+		return representation;
+	}
+
+	@Override
+	public void fillFromXml(XmlTree xmlTreeRepresentation)
+			throws IllegalArgumentException {
+		if (this.fixed)
+			throw new IllegalArgumentException("Tried to manipulate a fixed position");
+		this.x = Integer.parseInt(xmlTreeRepresentation.getAttributeValue("x"));
+		this.y = Integer.parseInt(xmlTreeRepresentation.getAttributeValue("y"));
+	}
+	
+	public static Position fillFromXmlStatic(XmlTree xmlTreeRepresentation) {
+		return get(Integer.parseInt(xmlTreeRepresentation.getAttributeValue("x")), Integer.parseInt(xmlTreeRepresentation.getAttributeValue("y")));
 	}
 }

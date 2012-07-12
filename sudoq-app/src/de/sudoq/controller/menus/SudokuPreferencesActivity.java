@@ -24,8 +24,13 @@ import de.sudoq.model.game.Game;
 import de.sudoq.model.game.GameManager;
 import de.sudoq.model.game.GameType;
 import de.sudoq.model.profile.Profile;
+import de.sudoq.model.sudoku.Constraint;
+import de.sudoq.model.sudoku.ConstraintType;
+import de.sudoq.model.sudoku.Position;
+import de.sudoq.model.sudoku.UniqueConstraintBehavior;
 import de.sudoq.model.sudoku.complexity.Complexity;
-import de.sudoq.model.sudoku.sudokuTypes.SudokuTypes;
+import de.sudoq.model.sudoku.sudokuTypes.SudokuType;
+import de.sudoq.model.sudoku.sudokuTypes.SudokuTypeNames;
 
 /**
  * SudokuPreferences ermöglicht das Verwalten von Einstellungen eines zu
@@ -55,7 +60,7 @@ public class SudokuPreferencesActivity extends SudoqActivity {
 
 	private static final String LOG_TAG = SudokuPreferencesActivity.class.getSimpleName();
 
-	private SudokuTypes sudokuType;
+	private int sudokuType;
 
 	private GameType gameType;
 
@@ -122,25 +127,25 @@ public class SudokuPreferencesActivity extends SudoqActivity {
 				String item = parent.getItemAtPosition(pos).toString();
 
 				if (item.equals(getResources().getString(R.string.sudoku_type_standard_9x9))) {
-					setSudokuType(SudokuTypes.standard9x9);
+					setSudokuType(0);
 				} else if (item.equals(getResources().getString(R.string.sudoku_type_standard_16x16))) {
-					setSudokuType(SudokuTypes.standard16x16);
+					setSudokuType(0);
 				} else if (item.equals(getResources().getString(R.string.sudoku_type_standard_6x6))) {
-					setSudokuType(SudokuTypes.standard6x6);
+					setSudokuType(0);
 				} else if (item.equals(getResources().getString(R.string.sudoku_type_standard_4x4))) {
-					setSudokuType(SudokuTypes.standard4x4);
+					setSudokuType(0);
 				} else if (item.equals(getResources().getString(R.string.sudoku_type_squiggly_a_9x9))) {
-					setSudokuType(SudokuTypes.squigglya);
+					setSudokuType(0);
 				} else if (item.equals(getResources().getString(R.string.sudoku_type_squiggly_b_9x9))) {
-					setSudokuType(SudokuTypes.squigglyb);
+					setSudokuType(0);
 				} else if (item.equals(getResources().getString(R.string.sudoku_type_stairstep_9x9))) {
-					setSudokuType(SudokuTypes.stairstep);
+					setSudokuType(0);
 				} else if (item.equals(getResources().getString(R.string.sudoku_type_hyper))) {
-					setSudokuType(SudokuTypes.HyperSudoku);
+					setSudokuType(0);
 				} else if (item.equals(getResources().getString(R.string.sudoku_type_xsudoku))) {
-					setSudokuType(SudokuTypes.Xsudoku);
+					setSudokuType(0);
 				} else if (item.equals(getResources().getString(R.string.sudoku_type_samurai))) {
-					setSudokuType(SudokuTypes.samurai);
+					setSudokuType(0);
 				}
 			}
 
@@ -191,7 +196,10 @@ public class SudokuPreferencesActivity extends SudoqActivity {
 	 *            von android xml übergebene View
 	 */
 	public void startGame(View view) {
-		if (this.sudokuType != null && this.complexity != null && this.gameType != null && this.assistances != null) {
+		
+		startActivity(this.startGameIntent);
+		overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+		/*if (this.sudokuType != -1 && this.complexity != null && this.gameType != null && this.assistances != null) {
 			try {
 				Game game = GameManager.getInstance().newGame(this.sudokuType, this.complexity, this.gameType, this.assistances);
 				Profile.getInstance().setCurrentGame(game.getId());
@@ -202,7 +210,7 @@ public class SudokuPreferencesActivity extends SudoqActivity {
 			}
 		} else {
 			Toast.makeText(this, getString(R.string.error_sudoku_preference_incomplete), Toast.LENGTH_SHORT);
-		}
+		}*/
 	}
 
 	/**
@@ -212,9 +220,9 @@ public class SudokuPreferencesActivity extends SudoqActivity {
 	 * @param type
 	 *            Typ des zu startenden Sudokus
 	 */
-	public void setSudokuType(SudokuTypes type) {
+	public void setSudokuType(int type) {
 		this.sudokuType = type;
-		Log.d(LOG_TAG, "type changed to:" + type.toString());
+		Log.d(LOG_TAG, "type changed to:" + SudokuTypeNames.getInstance().getName(type));
 	}
 
 	/**

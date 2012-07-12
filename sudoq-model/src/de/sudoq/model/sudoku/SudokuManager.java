@@ -12,7 +12,6 @@ import de.sudoq.model.solverGenerator.Generator;
 import de.sudoq.model.solverGenerator.GeneratorCallback;
 import de.sudoq.model.solverGenerator.transformations.Transformer;
 import de.sudoq.model.sudoku.complexity.Complexity;
-import de.sudoq.model.sudoku.sudokuTypes.SudokuTypes;
 import de.sudoq.model.xml.SudokuXmlHandler;
 
 /**
@@ -77,7 +76,7 @@ public class SudokuManager implements GeneratorCallback {
 	public void usedSudoku(Sudoku sudoku) {
 		if (sudoku.getTransformCount() >= 10) {
 			used = sudoku;
-			generator.generate(sudoku.getSudokuType().getEnumType(), sudoku.getComplexity(), this);
+			generator.generate(sudoku.getSudokuType().getId(), sudoku.getComplexity(), this);
 		} else {
 			Transformer.transform(sudoku);
 			new SudokuXmlHandler().saveAsXml(sudoku);
@@ -94,9 +93,9 @@ public class SudokuManager implements GeneratorCallback {
 	 *            Schwierigkeit des Sudokus
 	 * @return das neue Sudoku
 	 */
-	public static Sudoku getNewSudoku(SudokuTypes t, Complexity c) {
+	public static Sudoku getNewSudoku(int typeId, Complexity c) {
 		Sudoku sudoku = getEmptySudokuToFillWithXml();
-		new SudokuXmlHandler(t, c).createObjectFromXml(sudoku);
+		new SudokuXmlHandler(typeId, c).createObjectFromXml(sudoku);
 		return sudoku;
 	}
 

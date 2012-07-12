@@ -12,7 +12,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import de.sudoq.model.sudoku.complexity.Complexity;
-import de.sudoq.model.sudoku.sudokuTypes.SudokuTypes;
+import de.sudoq.model.sudoku.sudokuTypes.SudokuTypeNames;
 
 /**
  * Eine Klasse um die zu einem Spiel zugehörigen Daten zu sammeln ohne jeweils
@@ -23,7 +23,7 @@ public class GameData implements Comparable<GameData> {
 	private int id;
 	private Date playedAt;
 	private boolean finished;
-	private SudokuTypes type;
+	private String type;
 	protected final static String dateFormat = "yyyy:MM:dd HH:mm:ss";
 	private Complexity complexity;
 
@@ -44,7 +44,7 @@ public class GameData implements Comparable<GameData> {
 	 *             falls playedAt null ist oder nicht zu einem Datum parsebar
 	 *             ist
 	 */
-	public GameData(int id, String playedAt, boolean finished, SudokuTypes type, Complexity complexity) {
+	public GameData(int id, String playedAt, boolean finished, String type, Complexity complexity) {
 		if (playedAt == null)
 			throw new IllegalArgumentException();
 		this.type = type;
@@ -73,7 +73,7 @@ public class GameData implements Comparable<GameData> {
 	 * 
 	 * @return die Schwierigkeit
 	 */
-	public SudokuTypes getType() {
+	public String getType() {
 		return type;
 	}
 

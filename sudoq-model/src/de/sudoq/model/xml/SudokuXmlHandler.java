@@ -12,7 +12,6 @@ import java.io.File;
 import de.sudoq.model.files.FileManager;
 import de.sudoq.model.sudoku.Sudoku;
 import de.sudoq.model.sudoku.complexity.Complexity;
-import de.sudoq.model.sudoku.sudokuTypes.SudokuTypes;
 
 /**
  * Der XmlHandler zum Laden und Speichern von Sudokus
@@ -20,13 +19,13 @@ import de.sudoq.model.sudoku.sudokuTypes.SudokuTypes;
 public class SudokuXmlHandler extends XmlHandler<Sudoku> {
 
 	private Complexity complexity;
-	private SudokuTypes type;
+	private int type;
 
 	/**
 	 * Erzeugt einen SudokuXmlHandler, der ein neues sudoku file anlegt
 	 */
 	public SudokuXmlHandler() {
-		this(null, null);
+		this(-1, null);
 	}
 
 	/**
@@ -38,7 +37,7 @@ public class SudokuXmlHandler extends XmlHandler<Sudoku> {
 	 * @param complexity
 	 *            die Schwierigkeit des zu ladenden Sudokus
 	 */
-	public SudokuXmlHandler(SudokuTypes type, Complexity complexity) {
+	public SudokuXmlHandler(int type, Complexity complexity) {
 		this.type = type;
 		this.complexity = complexity;
 	}
@@ -48,7 +47,7 @@ public class SudokuXmlHandler extends XmlHandler<Sudoku> {
 	 */
 	@Override
 	protected File getFileFor(Sudoku s) {
-		if (type != null && complexity != null) {
+		if (type != -1 && complexity != null) {
 			return FileManager.getRandomSudoku(type, complexity);
 		} else if (s.getId() <= 0) {
 			return FileManager.getNewSudokuFile(s);

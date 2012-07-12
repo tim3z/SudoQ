@@ -7,18 +7,7 @@
  */
 package de.sudoq.model.sudoku;
 
-import de.sudoq.model.sudoku.sudokuTypes.HyperSudoku;
-import de.sudoq.model.sudoku.sudokuTypes.SamuraiSudokuType;
-import de.sudoq.model.sudoku.sudokuTypes.SquigglyASudokuType9x9;
-import de.sudoq.model.sudoku.sudokuTypes.SquigglyBSudokuType9x9;
-import de.sudoq.model.sudoku.sudokuTypes.StairStepSudokuType9x9;
-import de.sudoq.model.sudoku.sudokuTypes.StandardSudokuType;
-import de.sudoq.model.sudoku.sudokuTypes.StandardSudokuType16x16;
-import de.sudoq.model.sudoku.sudokuTypes.StandardSudokuType4x4;
-import de.sudoq.model.sudoku.sudokuTypes.StandardSudokuType6x6;
-import de.sudoq.model.sudoku.sudokuTypes.SudokuTypes;
-import de.sudoq.model.sudoku.sudokuTypes.TypeBasic;
-import de.sudoq.model.sudoku.sudokuTypes.XSudoku;
+import de.sudoq.model.sudoku.sudokuTypes.SudokuType;
 
 /**
  * Der SudokuBuilder stellt Methoden zur Verfügung, um einen Sudoku-Typ oder ein
@@ -28,20 +17,20 @@ public class SudokuBuilder {
 
 	private PositionMap<Integer> solutions;
 	private PositionMap<Boolean> setValues;
-	private TypeBasic type;
+	private SudokuType type;
 
 	/** Constructors */
 
 	/**
 	 * Erstellt einen Builder fuer ein Sudoku des spezifizierten Typs.
 	 * 
-	 * @param type
-	 *            der Enum-Typ des zu erstellenden Sudokus
+	 * @param typeId
+	 *            die ID des zu erstellenden Typs
 	 * @throws NullPointerException
 	 *             falls type invalid ist.
 	 */
-	public SudokuBuilder(SudokuTypes type) {
-		this(createType(type));
+	public SudokuBuilder(int typeId) {
+		this(SudokuType.getSudokuType(typeId));
 	}
 
 	/**
@@ -52,7 +41,10 @@ public class SudokuBuilder {
 	 * @throws NullPointerException
 	 *             falls type null ist.
 	 */
-	public SudokuBuilder(TypeBasic type) {
+	public SudokuBuilder(SudokuType type) {
+		if (type == null) {
+			throw new NullPointerException("Type is null");
+		}
 		this.type = type;
 		solutions = new PositionMap<Integer>(type.getSize());
 		setValues = new PositionMap<Boolean>(type.getSize());
@@ -98,44 +90,4 @@ public class SudokuBuilder {
 		setValues.put(pos, true);
 	}
 
-	/**
-	 * Erstellt ein SudokuType-Objekt entsprechend dem spezifizierten Typ-Namen
-	 * und gibt dieses zurück. Ist der übergebene Name null oder kann er nicht
-	 * zugeordnet werden, so wird null zurückgegeben.
-	 * 
-	 * @param type
-	 *            Der Enum-Typ des zu erstellenden Sudoku Types
-	 * @return Ein SudokuType-Objekt entsprechend dem spezifizierten Typnamen
-	 *         oder null, falls der Name null ist oder nicht zugeordnet werden
-	 *         kann
-	 */
-	public static TypeBasic createType(SudokuTypes type) {
-		if (type == null)
-			return null;
-
-		switch (type) {
-		case standard9x9:
-			return new StandardSudokuType();
-		case standard16x16:
-			return new StandardSudokuType16x16();
-		case standard4x4:
-			return new StandardSudokuType4x4();
-		case standard6x6:
-			return new StandardSudokuType6x6();
-		case Xsudoku:
-			return new XSudoku();
-		case HyperSudoku:
-			return new HyperSudoku();
-		case squigglya:
-			return new SquigglyASudokuType9x9();
-		case squigglyb:
-			return new SquigglyBSudokuType9x9();
-		case stairstep:
-			return new StairStepSudokuType9x9();
-		case samurai:
-			return new SamuraiSudokuType();
-		default:
-			return null;
-		}
-	}
 }

@@ -47,9 +47,20 @@ import de.sudoq.model.actionTree.ActionTreeElement;
 import de.sudoq.model.files.FileManager;
 import de.sudoq.model.game.Assistances;
 import de.sudoq.model.game.Game;
+import de.sudoq.model.game.GameData;
 import de.sudoq.model.game.GameManager;
 import de.sudoq.model.profile.Profile;
+import de.sudoq.model.solverGenerator.Generator;
+import de.sudoq.model.sudoku.Constraint;
+import de.sudoq.model.sudoku.ConstraintType;
 import de.sudoq.model.sudoku.Field;
+import de.sudoq.model.sudoku.Position;
+import de.sudoq.model.sudoku.Sudoku;
+import de.sudoq.model.sudoku.SudokuBuilder;
+import de.sudoq.model.sudoku.UniqueConstraintBehavior;
+import de.sudoq.model.sudoku.complexity.Complexity;
+import de.sudoq.model.sudoku.sudokuTypes.SudokuType;
+import de.sudoq.model.xml.XmlHelper;
 import de.sudoq.view.FullScrollLayout;
 import de.sudoq.view.SudokuFieldView;
 import de.sudoq.view.SudokuLayout;
@@ -196,7 +207,78 @@ public class SudokuActivity extends SudoqActivity implements OnClickListener, Ac
 				this.finish();
 			}
 		} else {
-			this.game = GameManager.getInstance().load(Profile.getInstance().getCurrentGame());
+			//this.game = GameManager.getInstance().load(Profile.getInstance().getCurrentGame());
+			File f = new File(FileManager.getGamesDir().getPath() + "Test.xml");
+			System.out.println(f.getPath());
+			SudokuType type = new SudokuType(9, 9, 9);
+			XmlHelper h = new XmlHelper();
+			if (f.exists()) {
+				try {
+					type.fillFromXml(h.loadXml(f));
+				} catch (IllegalArgumentException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (FileNotFoundException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			} else {
+						
+			int length = 9;
+
+			int blockheight = 3;
+			int blockwidth = 3;
+
+			for (int j = 0; j < length; j++) {
+				Constraint c = new Constraint(new UniqueConstraintBehavior(), ConstraintType.LINE, "Row " + j);
+				for (int i = 0; i < length; i++) {
+					c.addPosition(Position.get(i, j));
+				}
+				type.addConstraint(c);
+			}
+			
+			for (int i = 0; i < length; i++) {
+				Constraint c = new Constraint(new UniqueConstraintBehavior(), ConstraintType.LINE, "Column " + i);
+				for (int j = 0; j < length; j++) {
+					c.addPosition(Position.get(i, j));
+				}
+				type.addConstraint(c);
+			}
+			
+			for (int i = 0; i < length; i++) {// Blöcke
+				Constraint c = new Constraint(new UniqueConstraintBehavior(), ConstraintType.BLOCK, "Block " + i);
+				for (int j = 0; j < length; j++) {// Elemente
+
+					c.addPosition(Position.get(i % blockheight * blockwidth + j % blockwidth, i / blockheight
+							* blockheight + j / blockwidth));
+				}
+				type.addConstraint(c);
+			}
+			
+			try {
+				h.saveXml(type.toXmlTree(), f);
+			} catch (IllegalArgumentException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			}
+			
+			SudokuBuilder sb = new SudokuBuilder(type);
+			for (int i = 0; i < 9; i++) {
+				for (int j = 0; j < 9; j++) {
+					sb.addSolution(Position.get(i, j), (((i / 3) + (i % 3) * 3) + j) % 9);
+				}
+			}
+			
+			Sudoku s = sb.createSudoku();
+			s.setComplexity(Complexity.easy);
+			game = new Game(1, s);
 		}
 
 		if (game != null) {
@@ -333,39 +415,7 @@ public class SudokuActivity extends SudoqActivity implements OnClickListener, Ac
 	private void setTypeText() {
 		TextView type = (TextView) findViewById(R.id.sudoku_type);
 
-		switch (this.game.getSudoku().getSudokuType().getEnumType()) {
-		case HyperSudoku:
-			type.append(getString(R.string.sudoku_type_hyper));
-			break;
-		case samurai:
-			type.append(getString(R.string.sudoku_type_samurai));
-			break;
-		case squigglya:
-			type.append(getString(R.string.sudoku_type_squiggly_a_9x9));
-			break;
-		case squigglyb:
-			type.append(getString(R.string.sudoku_type_squiggly_b_9x9));
-			break;
-		case stairstep:
-			type.append(getString(R.string.sudoku_type_stairstep_9x9));
-			break;
-		case standard16x16:
-			type.append(getString(R.string.sudoku_type_standard_16x16));
-			break;
-		case standard4x4:
-			type.append(getString(R.string.sudoku_type_standard_4x4));
-			break;
-		case standard6x6:
-			type.append(getString(R.string.sudoku_type_standard_6x6));
-			break;
-		case standard9x9:
-			type.append(getString(R.string.sudoku_type_standard_9x9));
-			break;
-		case Xsudoku:
-			type.append(getString(R.string.sudoku_type_xsudoku));
-			break;
-		}
-
+		type.append(this.game.getSudoku().getSudokuType().toString());
 		type.append(", ");
 
 		switch (this.game.getSudoku().getComplexity()) {

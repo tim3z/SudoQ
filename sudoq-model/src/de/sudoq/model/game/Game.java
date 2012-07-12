@@ -83,7 +83,8 @@ public class Game implements Xmlable {
      * @throws IllegalArgumentException
      *             Wird geworfen, falls das übergebene Sudoku null ist
      */
-    protected Game(int id, Sudoku sudoku) {
+    // TODO protected
+    public Game(int id, Sudoku sudoku) {
         if (sudoku == null) {
             throw new IllegalArgumentException("sudoku null");
         }

@@ -14,8 +14,7 @@ import java.util.Map;
 import de.sudoq.model.ModelChangeListener;
 import de.sudoq.model.ObservableModelImpl;
 import de.sudoq.model.sudoku.complexity.Complexity;
-import de.sudoq.model.sudoku.sudokuTypes.SudokuTypes;
-import de.sudoq.model.sudoku.sudokuTypes.TypeBasic;
+import de.sudoq.model.sudoku.sudokuTypes.SudokuType;
 import de.sudoq.model.xml.XmlAttribute;
 import de.sudoq.model.xml.XmlTree;
 import de.sudoq.model.xml.Xmlable;
@@ -44,7 +43,7 @@ public class Sudoku extends ObservableModelImpl<Field> implements Iterable<Field
 	/**
 	 * Der Typ dieses Sudokus
 	 */
-	private TypeBasic type;
+	private SudokuType type;
 
 	/**
 	 * Der Schwierigkeitsgrad dieses Sudokus
@@ -62,7 +61,7 @@ public class Sudoku extends ObservableModelImpl<Field> implements Iterable<Field
 	 * @throws IllegalArgumentException
 	 *             Wird geworfen, falls der übergebene Typ null ist
 	 */
-	public Sudoku(TypeBasic type) {
+	public Sudoku(SudokuType type) {
 		this(type, new PositionMap<Integer>(type == null ? Position.get(1, 1) : type.getSize()),
 				new PositionMap<Boolean>(type == null ? Position.get(1, 1) : type.getSize()));
 	}
@@ -81,7 +80,7 @@ public class Sudoku extends ObservableModelImpl<Field> implements Iterable<Field
 	 * @throws IllegalArgumentException
 	 *             Wird geworfen, falls der übergebene Typ null ist
 	 */
-	public Sudoku(TypeBasic type, PositionMap<Integer> map, PositionMap<Boolean> setValues) {
+	public Sudoku(SudokuType type, PositionMap<Integer> map, PositionMap<Boolean> setValues) {
 		if (type == null) {
 			throw new IllegalArgumentException();
 		}
@@ -226,7 +225,7 @@ public class Sudoku extends ObservableModelImpl<Field> implements Iterable<Field
 	 * 
 	 * @return Der Typ dieses Sudokus
 	 */
-	public TypeBasic getSudokuType() {
+	public SudokuType getSudokuType() {
 		return type;
 	}
 
@@ -264,7 +263,7 @@ public class Sudoku extends ObservableModelImpl<Field> implements Iterable<Field
 			representation.addAttribute(new XmlAttribute("id", "" + id));
 		}
 		representation.addAttribute(new XmlAttribute("transformCount", "" + transformCount));
-		representation.addAttribute(new XmlAttribute("type", "" + this.getSudokuType().getEnumType().ordinal()));
+		representation.addAttribute(new XmlAttribute("type", "" + this.getSudokuType().getId()));
 		if (complexity != null) {
 			representation.addAttribute(new XmlAttribute("complexity", "" + this.getComplexity().ordinal()));
 		}
@@ -303,8 +302,8 @@ public class Sudoku extends ObservableModelImpl<Field> implements Iterable<Field
 		} catch (NumberFormatException e) {
 			id = -1;
 		}
-		type = SudokuBuilder.createType(SudokuTypes.values()[Integer.parseInt(xmlTreeRepresentation
-				.getAttributeValue("type"))]);
+		type = SudokuType.getSudokuType(Integer.parseInt(xmlTreeRepresentation.getAttributeValue("type")));
+		
 		transformCount = Integer.parseInt(xmlTreeRepresentation.getAttributeValue("transformCount"));
 
 		String compl = xmlTreeRepresentation.getAttributeValue("complexity");
@@ -366,7 +365,7 @@ public class Sudoku extends ObservableModelImpl<Field> implements Iterable<Field
 			Sudoku other = (Sudoku) obj;
 
 			allEqual &= complexity == other.getComplexity();
-			allEqual &= other.getSudokuType().getEnumType().equals(type.getEnumType());
+			allEqual &= other.getSudokuType().getId() == type.getId();
 
 			for (Map.Entry<Position, Field> fieldpos : fields.entrySet()) {
 				Field field = fieldpos.getValue();

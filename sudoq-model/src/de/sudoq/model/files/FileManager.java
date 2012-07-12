@@ -15,7 +15,6 @@ import java.util.Random;
 
 import de.sudoq.model.sudoku.Sudoku;
 import de.sudoq.model.sudoku.complexity.Complexity;
-import de.sudoq.model.sudoku.sudokuTypes.SudokuTypes;
 import de.sudoq.model.xml.XmlHelper;
 import de.sudoq.model.xml.XmlTree;
 
@@ -298,7 +297,7 @@ public final class FileManager {
 	 *            die gesuchte Sudoku Schwierigkeit
 	 * @return die Anzahl
 	 */
-	public static int getSudokuCountOf(SudokuTypes t, Complexity c) {
+	public static int getSudokuCountOf(int t, Complexity c) {
 		return getSudokuDir(t, c).list().length;
 	}
 
@@ -335,7 +334,7 @@ public final class FileManager {
 	 *            die Schwierigkeit des Sudokus
 	 * @return die Referenz auf die Datei
 	 */
-	public static File getRandomSudoku(SudokuTypes type, Complexity complexity) {
+	public static File getRandomSudoku(int type, Complexity complexity) {
 		File dir = getSudokuDir(type, complexity);
 		if (dir.list().length > 0) {
 			String fileName = dir.list()[new Random().nextInt(dir.list().length)];
@@ -353,7 +352,7 @@ public final class FileManager {
 	 * @return den Ordner
 	 */
 	private static File getSudokuDir(Sudoku s) {
-		return getSudokuDir(s.getSudokuType().getEnumType(), s.getComplexity());
+		return getSudokuDir(s.getSudokuType().getId(), s.getComplexity());
 	}
 
 	/**
@@ -377,8 +376,8 @@ public final class FileManager {
 	 *            die Schwierigkeit des Sudokus
 	 * @return der Ordner
 	 */
-	private static File getSudokuDir(SudokuTypes type, Complexity complexity) {
-		return new File(sudokus.getAbsolutePath() + File.separator + type.toString() + File.separator + complexity.toString());
+	private static File getSudokuDir(int type, Complexity complexity) {
+		return new File(sudokus.getAbsolutePath() + File.separator + type + File.separator + complexity.toString());
 	}
 
 	/**
@@ -403,13 +402,20 @@ public final class FileManager {
 	 * Schwierigkeiten
 	 */
 	private static void initSudokuDirectories() {
-		for (SudokuTypes t : SudokuTypes.values()) {
-			File typeDir = new File(sudokus.getAbsoluteFile() + File.separator + t.toString());
-			if (!typeDir.exists()) typeDir.mkdir();
+		File typeDir = new File(sudokus.getAbsoluteFile() + File.separator + 0);
+		if (!typeDir.exists()) typeDir.mkdir();
 
-			for (Complexity c : Complexity.values()) {
-				new File(typeDir.getAbsolutePath() + File.separator + c.toString()).mkdir();
-			}
+		for (Complexity c : Complexity.values()) {
+			new File(typeDir.getAbsolutePath() + File.separator + c.toString()).mkdir();
 		}
+		// TODO generic
+//		for (int t : SudokuTypes.values()) {
+//			File typeDir = new File(sudokus.getAbsoluteFile() + File.separator + t.toString());
+//			if (!typeDir.exists()) typeDir.mkdir();
+//
+//			for (Complexity c : Complexity.values()) {
+//				new File(typeDir.getAbsolutePath() + File.separator + c.toString()).mkdir();
+//			}
+//		}
 	}
 }
