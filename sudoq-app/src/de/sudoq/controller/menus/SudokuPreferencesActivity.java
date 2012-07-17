@@ -197,11 +197,11 @@ public class SudokuPreferencesActivity extends SudoqActivity {
 	 */
 	public void startGame(View view) {
 		
-		startActivity(this.startGameIntent);
-		overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
-		/*if (this.sudokuType != -1 && this.complexity != null && this.gameType != null && this.assistances != null) {
-			try {
-				Game game = GameManager.getInstance().newGame(this.sudokuType, this.complexity, this.gameType, this.assistances);
+		/*startActivity(this.startGameIntent);
+		overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);*/
+		if (this.sudokuType != -1 && this.complexity != null && this.gameType != null && this.assistances != null) {
+			try {// this.sudokuType statt 0
+				Game game = GameManager.getInstance().newGame(0, this.complexity, this.gameType, this.assistances);
 				Profile.getInstance().setCurrentGame(game.getId());
 				startActivity(this.startGameIntent);
 				overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
@@ -210,7 +210,7 @@ public class SudokuPreferencesActivity extends SudoqActivity {
 			}
 		} else {
 			Toast.makeText(this, getString(R.string.error_sudoku_preference_incomplete), Toast.LENGTH_SHORT);
-		}*/
+		}
 	}
 
 	/**

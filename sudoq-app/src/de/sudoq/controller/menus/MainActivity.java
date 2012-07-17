@@ -12,10 +12,13 @@ import java.io.File;
 import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import de.sudoq.R;
 import de.sudoq.controller.SudoqActivity;
+import de.sudoq.controller.builder.BuilderActivity;
+import de.sudoq.controller.builder.BuilderPreferencesActivity;
 import de.sudoq.controller.sudoku.SudokuActivity;
 import de.sudoq.model.files.FileManager;
 import de.sudoq.model.profile.Profile;
@@ -118,6 +121,10 @@ public class MainActivity extends SudoqActivity {
 		case R.id.button_mainmenu_profile:
 			Intent preferencesIntent = new Intent(this, PlayerPreferencesActivity.class);
 			startActivity(preferencesIntent);
+			break;
+		case R.id.button_mainmenu_builder:
+			Intent builderIntent = new Intent(this, BuilderPreferencesActivity.class);
+			startActivity(builderIntent);
 			break;
 		}
 	}

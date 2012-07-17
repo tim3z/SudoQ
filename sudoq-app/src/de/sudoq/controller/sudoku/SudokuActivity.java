@@ -207,12 +207,13 @@ public class SudokuActivity extends SudoqActivity implements OnClickListener, Ac
 				this.finish();
 			}
 		} else {
-			//this.game = GameManager.getInstance().load(Profile.getInstance().getCurrentGame());
-			File f = new File(FileManager.getGamesDir().getPath() + "Test.xml");
-			System.out.println(f.getPath());
-			SudokuType type = new SudokuType(9, 9, 9);
+			this.game = GameManager.getInstance().load(Profile.getInstance().getCurrentGame());
+			/*SudokuType type = new SudokuType(9, 9, 9);
+			File f = FileManager.getSudokuTypeFile(0);
+			Log.d(LOG_TAG, f.getPath());
 			XmlHelper h = new XmlHelper();
 			if (f.exists()) {
+				Log.d(LOG_TAG, "Type loaded");
 				try {
 					type.fillFromXml(h.loadXml(f));
 				} catch (IllegalArgumentException e) {
@@ -259,6 +260,7 @@ public class SudokuActivity extends SudoqActivity implements OnClickListener, Ac
 			}
 			
 			try {
+				type.setId(0);
 				h.saveXml(type.toXmlTree(), f);
 			} catch (IllegalArgumentException e) {
 				// TODO Auto-generated catch block
@@ -278,7 +280,7 @@ public class SudokuActivity extends SudoqActivity implements OnClickListener, Ac
 			
 			Sudoku s = sb.createSudoku();
 			s.setComplexity(Complexity.easy);
-			game = new Game(1, s);
+			game = new Game(1, s);*/
 		}
 
 		if (game != null) {

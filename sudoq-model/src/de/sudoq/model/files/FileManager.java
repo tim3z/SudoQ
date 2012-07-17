@@ -367,6 +367,15 @@ public final class FileManager {
 	}
 
 	/**
+	 * Gibt die Sudoku-Typdatei für die spezifizierten Id zurück.
+	 * @param type die Typ-Id
+	 * @return die entsprechende Sudoku-Typdatei
+	 */
+	public static File getSudokuTypeFile(int type) {
+		return new File(sudokus.getAbsolutePath() + File.separator + type + File.separator + "type.xml");
+	}
+	
+	/**
 	 * Gibt den die Sudokus mit den gegebenen Parametern enthaltennden Ordner
 	 * zurueck
 	 * 
@@ -387,6 +396,7 @@ public final class FileManager {
 	 */
 	private static int getFreeSudokuIdFor(Sudoku sudoku) {
 		ArrayList<Integer> numbers = new ArrayList<Integer>();
+		System.out.println(getSudokuDir(sudoku).getAbsolutePath());
 		for (String s : getSudokuDir(sudoku).list()) {
 			numbers.add(Integer.parseInt(s.substring(7, s.length() - 4)));
 		}

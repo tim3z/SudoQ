@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="@drawable/background_gradient">
+        
+    <LinearLayout
+	    android:id="@+id/playerpreferences_layout_everything"
+	    android:layout_width="fill_parent"
+	    android:layout_height="wrap_content"
+	    android:orientation="vertical" >
+	    
+	    <TextView 
+	        android:layout_width="fill_parent"
+	        android:layout_height="wrap_content"
+	        android:focusableInTouchMode="true" 
+	        android:focusable="true"
+	        android:gravity="center"
+	        android:layout_margin="10dp"
+	        android:textAppearance="@android:style/TextAppearance.Large" 
+	        android:text="Builder Preferences"
+		    android:textColor="@android:color/black" />
+	    
+	    <TextView
+	        android:id="@+id/textview_sudokutype"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:layout_margin="10dp"
+	        android:text="Breite:"
+	        android:textColor="@android:color/black" />
+	    
+    	<EditText
+        	android:id="@+id/sudoku_builder_size_x"
+        	android:layout_width="fill_parent"
+	        android:layout_height="wrap_content"
+	        android:layout_margin="10dp" 
+	        android:inputType="numberSigned"/>
+    	
+    	<TextView
+	        android:id="@+id/textview_sudokutype"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:layout_margin="10dp"
+	        android:text="Höhe:"
+	        android:textColor="@android:color/black" />
+	    
+    	<EditText
+        	android:id="@+id/sudoku_builder_size_y"
+        	android:layout_width="fill_parent"
+	        android:layout_height="wrap_content"
+	        android:layout_margin="10dp"
+	        android:inputType="numberSigned" />
+    	
+    	<Button
+    	    android:id="@+id/sudoku_builder_start"
+    	    android:text="Start Builder"
+    	    android:layout_width="fill_parent"
+	        android:layout_height="wrap_content"
+	        android:layout_margin="10dp"
+	        android:onClick="startBuilder" />
+
+	</LinearLayout>
+
+</ScrollView>

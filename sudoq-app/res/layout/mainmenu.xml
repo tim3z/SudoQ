@@ -47,6 +47,12 @@
 	        style="@style/style_mainmenu_buttons"
 	        android:text="@string/sf_mainmenu_profile"
 	        android:onClick="switchActivity" />
+	    
+	    <Button
+	        android:id="@+id/button_mainmenu_builder"
+	        style="@style/style_mainmenu_buttons"
+	        android:text="@string/sf_mainmenu_builder"
+	        android:onClick="switchActivity" />
 	
 	</LinearLayout>
 </ScrollView>

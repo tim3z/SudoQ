@@ -25,6 +25,8 @@
         <activity android:name=".controller.menus.GameTypeSelectionActivity"></activity>
         <activity android:name=".controller.menus.GestureBuilder"></activity>
         <activity android:name=".controller.sudoku.SudokuActivity"></activity>
+        <activity android:name=".controller.builder.BuilderActivity"></activity>
+        <activity android:name=".controller.builder.BuilderPreferencesActivity"></activity>
         <activity android:name=".controller.menus.SudokuLoadingActivity" android:noHistory="true" android:configChanges="orientation"></activity>
         <activity android:name=".controller.menus.SudokuPreferencesActivity" ></activity>
         <activity android:name=".controller.menus.AssistancesPreferencesActivity"></activity>

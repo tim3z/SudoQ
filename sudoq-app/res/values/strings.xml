@@ -92,6 +92,7 @@
     <string name="sf_mainmenu_continue">Continue</string>
     <string name="sf_mainmenu_load_sudoku">Load Sudoku</string>
     <string name="sf_mainmenu_profile">Profile</string>
+    <string name="sf_mainmenu_builder">Builder</string> <!-- TODO: translate -->
     
     <!-- GestureBuilder -->
     <string name="gesture_builder_define_gesture">Define a Gesture</string>

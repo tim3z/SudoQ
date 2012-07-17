@@ -157,7 +157,8 @@ public class XmlHelper {
 			}
 		}
 		if (!supported) {
-			throw new IllegalArgumentException("XmlTree Object is of an unsupported type.");
+			// TODO DTD for types
+			//throw new IllegalArgumentException("XmlTree Object is of an unsupported type.");
 		}
 
 		FileOutputStream oustream = new FileOutputStream(xmlFile);

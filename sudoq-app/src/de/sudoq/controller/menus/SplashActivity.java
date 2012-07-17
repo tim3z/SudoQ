@@ -55,7 +55,7 @@ public class SplashActivity extends SudoqActivity {
 	/**
 	 * Die minimale Anzeigedauer des SplashScreens
 	 */
-	public static int splashTime = 2500;
+	public static int splashTime = 0;// TODO: reset 2500;
 
 	/**
 	 * Die Zeit, die schon vergangen ist, seit der SplashScreen gestartet wurde
