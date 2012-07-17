@@ -141,7 +141,7 @@ public class ActionTreeController implements ActionTreeNavListener, ModelChangeL
 	/**
 	 * Die Breite des Aktionsbaumes beim letzten Zeichnen.
 	 */
-	private int actionTreeWidht;
+	private int actionTreeWidth;
 
 	/**
 	 * Die aktuelle Ausrichtung des Geräts
@@ -189,16 +189,16 @@ public class ActionTreeController implements ActionTreeNavListener, ModelChangeL
 
 		// Draw elements
 		this.actionTreeHeight = 0;
-		this.actionTreeWidht = 0;
+		this.actionTreeWidth = 0;
 		drawElementsUnder(root, this.rootElementInitX, this.rootElementInitY);
 
 		// Dummy element for a margin at bottom
 		Log.d(LOG_TAG, "ActionTree height: " + this.actionTreeHeight);
-		Log.d(LOG_TAG, "ActionTree width: " + this.actionTreeWidht);
+		Log.d(LOG_TAG, "ActionTree width: " + this.actionTreeWidth);
 		View view = new View(context);
 		RelativeLayout.LayoutParams viewLayoutParams = new RelativeLayout.LayoutParams(AT_RASTER_SIZE, AT_RASTER_SIZE);
-		viewLayoutParams.topMargin = (this.actionTreeHeight + 1) * AT_RASTER_SIZE;
-		viewLayoutParams.leftMargin = (this.actionTreeWidht + 1) * AT_RASTER_SIZE;
+		viewLayoutParams.topMargin = (orientation == Configuration.ORIENTATION_PORTRAIT ? actionTreeHeight : actionTreeWidth + 1) * AT_RASTER_SIZE;
+		viewLayoutParams.leftMargin = (orientation == Configuration.ORIENTATION_PORTRAIT ? actionTreeWidth : actionTreeHeight + 1) * AT_RASTER_SIZE;
 		view.setLayoutParams(viewLayoutParams);
 		this.relativeLayout.addView(view);
 
@@ -248,7 +248,7 @@ public class ActionTreeController implements ActionTreeNavListener, ModelChangeL
 		}
 
 		this.actionTreeHeight = x > this.actionTreeHeight ? x : this.actionTreeHeight;
-		this.actionTreeWidht = y > this.actionTreeWidht ? y : this.actionTreeWidht;
+		this.actionTreeWidth = y > this.actionTreeWidth ? y : this.actionTreeWidth;
 		return dy > 0 ? dy : 1;
 	}
 
