@@ -1,0 +1,7 @@
+ConstraintModifiedListener für Update der Typgröße
+Konsistenz änderbare Constraints
+Mühle-Type
+memory leak: großer typ z.B. 900 * 900 im builder: memoryout
+memory leak: großer typ z.B. 90 * 90 im builder: viele touch events
+open action tree when fixed symbol clicked
+keyboard not updated when working on action tree

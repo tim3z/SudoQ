@@ -1,6 +1,6 @@
 /*
  * SudoQ is a Sudoku-App for Adroid Devices with Version 2.2 at least.
- * Copyright (C) 2012  Haiko Klare, Julian Geppert, Jan-Bernhard Kordaß, Jonathan Kieling, Tim Zeitz, Timo Abele
+ * Copyright (C) 2012  Heiko Klare, Julian Geppert, Jan-Bernhard Kordaß, Jonathan Kieling, Tim Zeitz, Timo Abele
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 3 of the License, or (at your option) any later version. 
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details. 
  * You should have received a copy of the GNU General Public License along with this program; if not, see <http://www.gnu.org/licenses/>.
@@ -12,7 +12,7 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Paint.Style;
 import android.view.View;
-import de.sudoq.controller.sudoku.ActionTreeController;
+import de.sudoq.controller.game.ActionTreeController;
 
 /**
  * Klasse zur Darstellung von Verbindungslinien zwischen Elementen im ActionTree
@@ -32,6 +32,8 @@ public class BranchingLine extends View {
 	 * Die Breite der Linie
 	 */
 	private int width;
+	
+	private Paint linePaint;
 
 	/** Constructors */
 
@@ -53,23 +55,32 @@ public class BranchingLine extends View {
 	 *            der y Wert der Endposition in Rasterkoordinaten des
 	 *            ActionTreeControllers
 	 */
-	public BranchingLine(Context context, int fromX, int fromY, int toX, int toY) {
+	public BranchingLine(Context context) {
 		super(context);
-		this.width = toY - fromY;
-		this.height = toX - fromX;
+		linePaint = new Paint();
+		linePaint.setStrokeWidth(5);
+		linePaint.setStyle(Style.STROKE);
+		linePaint.setColor(ActionTreeElementView.DEFAULT_COLOR);
+		linePaint.setAlpha(180);
+		linePaint.setAntiAlias(true);
 	}
+	
+	public void setSize(int width, int height) {
+		if (width < 0 || height < 0) {
+			return;
+		}
+		
+		this.width = width;
+		this.height = height;
+	}
+	
 
 	/** Methods */
 
 	@Override
 	public void onDraw(Canvas canvas) {
 		super.onDraw(canvas);
-		Paint linePaint = new Paint();
-		linePaint.setStrokeWidth(5);
-		linePaint.setStyle(Style.STROKE);
-		linePaint.setColor(ActionTreeElementView.DEFAULT_COLOR);
-		linePaint.setAlpha(180);
-		linePaint.setAntiAlias(true);
+		// TODO ugly, ugly, ugly, ugly. ugly, no dependency on act!!!!
 		canvas.drawLine(ActionTreeController.AT_RASTER_SIZE / 2, ActionTreeController.AT_RASTER_SIZE / 2, this.width + ActionTreeController.AT_RASTER_SIZE / 2, this.height, linePaint);
 	}
 }

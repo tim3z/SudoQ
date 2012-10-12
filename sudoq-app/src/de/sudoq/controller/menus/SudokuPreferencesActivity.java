@@ -1,6 +1,6 @@
 /*
  * SudoQ is a Sudoku-App for Adroid Devices with Version 2.2 at least.
- * Copyright (C) 2012  Haiko Klare, Julian Geppert, Jan-Bernhard Kordaß, Jonathan Kieling, Tim Zeitz, Timo Abele
+ * Copyright (C) 2012  Heiko Klare, Julian Geppert, Jan-Bernhard Kordaß, Jonathan Kieling, Tim Zeitz, Timo Abele
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 3 of the License, or (at your option) any later version. 
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details. 
  * You should have received a copy of the GNU General Public License along with this program; if not, see <http://www.gnu.org/licenses/>.
@@ -18,7 +18,7 @@ import android.widget.Spinner;
 import android.widget.Toast;
 import de.sudoq.R;
 import de.sudoq.controller.SudoqActivity;
-import de.sudoq.controller.sudoku.SudokuActivity;
+import de.sudoq.controller.game.SudokuActivity;
 import de.sudoq.model.game.AssistanceSet;
 import de.sudoq.model.game.Game;
 import de.sudoq.model.game.GameManager;
@@ -154,7 +154,8 @@ public class SudokuPreferencesActivity extends SudoqActivity {
 			}
 		});
 		
-		this.assistances = AssistanceSet.fromString(Profile.getInstance().getAssistances().convertToString());
+		// TODO ugly ugly ugly ugly, not static!!
+		SudokuPreferencesActivity.assistances = AssistanceSet.fromString(Profile.getInstance().getAssistances().convertToString());
 	}
 
 	/**
@@ -209,7 +210,7 @@ public class SudokuPreferencesActivity extends SudoqActivity {
 				Toast.makeText(this, getString(R.string.sf_sudokupreferences_copying), Toast.LENGTH_SHORT).show();
 			}
 		} else {
-			Toast.makeText(this, getString(R.string.error_sudoku_preference_incomplete), Toast.LENGTH_SHORT);
+			Toast.makeText(this, getString(R.string.error_sudoku_preference_incomplete), Toast.LENGTH_SHORT).show();
 		}
 	}
 

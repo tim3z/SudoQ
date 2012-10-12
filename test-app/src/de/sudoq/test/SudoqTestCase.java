@@ -22,7 +22,7 @@ public class SudoqTestCase extends ActivityInstrumentationTestCase2<SplashActivi
 	public void setUp() {
 		solo = new Solo(getInstrumentation(), getActivity());
 		int save = SplashActivity.splashTime;
-		SplashActivity.splashTime = 0;
+		SplashActivity.splashTime = 500;
 		// wait for initialization to finish
 		while (solo.getCurrentActivity().getClass() == SplashActivity.class) {
 			solo.sleep(100);

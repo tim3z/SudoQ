@@ -2,9 +2,9 @@ package de.sudoq.test;
 
 import android.util.Log;
 import de.sudoq.R;
+import de.sudoq.controller.game.SudokuActivity;
 import de.sudoq.controller.menus.SudokuPreferencesActivity;
-import de.sudoq.controller.sudoku.SudokuActivity;
-import de.sudoq.view.SudokuFieldView;
+import de.sudoq.view.PaintableView;
 
 public class SudokuActivityTests extends SudoqTestCase {
 
@@ -67,12 +67,12 @@ public class SudokuActivityTests extends SudoqTestCase {
 		solo.assertCurrentActivity("should be in sudoku", SudokuActivity.class);
 
 		SudokuActivity sudokuActivity = (SudokuActivity) solo.getCurrentActivity();
-		SudokuFieldView[][] views = SudokuUtilities.getViewArray(sudokuActivity);
+		PaintableView[][] views = SudokuUtilities.getViewArray(sudokuActivity);
 
 		boolean found = false;
 		for (int row = 0; row < views.length; row++) {
 			for (int colum = 0; colum < views[row].length - 1; colum++) {
-				if (views[row][colum].getField().isEmpty() && views[row][colum + 1].getField().isEmpty()) {
+				if (sudokuActivity.getGameSudokuViewManager().getField(views[row][colum]).isEmpty() && sudokuActivity.getGameSudokuViewManager().getField(views[row][colum + 1]).isEmpty()) {
 					solo.clickOnView(views[row][colum]);
 					solo.clickOnView(SudokuUtilities.getKeyboardButton(sudokuActivity, 1));
 					solo.clickOnView(views[row][colum + 1]);

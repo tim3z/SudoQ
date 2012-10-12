@@ -1,6 +1,6 @@
 /*
  * SudoQ is a Sudoku-App for Adroid Devices with Version 2.2 at least.
- * Copyright (C) 2012  Haiko Klare, Julian Geppert, Jan-Bernhard Kordaß, Jonathan Kieling, Tim Zeitz, Timo Abele
+ * Copyright (C) 2012  Heiko Klare, Julian Geppert, Jan-Bernhard Kordaß, Jonathan Kieling, Tim Zeitz, Timo Abele
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 3 of the License, or (at your option) any later version. 
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details. 
  * You should have received a copy of the GNU General Public License along with this program; if not, see <http://www.gnu.org/licenses/>.
@@ -33,11 +33,6 @@ public class Symbol {
 	public static final String[] MAPPING_NUMBERS_HEX_DIGGITS = new String[] { "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16" };
 
 	/**
-	 * Die statische Instanz dieses Singletons.
-	 */
-	private static Symbol instance;
-
-	/**
 	 * Der aktuell verwendete Satz von Symbolen.
 	 */
 	protected String[] symbolSet;
@@ -48,36 +43,10 @@ public class Symbol {
 	 * @param mapping
 	 *            Das zu setzende Mapping
 	 */
-	private Symbol(String[] mapping) {
+	public Symbol(String[] mapping) {
 		this.symbolSet = mapping;
 	}
 
-	/**
-	 * Gibt die Instanz des Symbols zurück.
-	 * 
-	 * @return Die Instanz des Symbols.
-	 * @throws IllegalArgumentException
-	 *             wenn das Symbol noch nicht initialisiert wurde.
-	 */
-	public static Symbol getInstance() {
-		if (instance != null) {
-			return instance;
-		} else {
-			throw new IllegalStateException("Symbol not instanciated!");
-		}
-	}
-
-	/**
-	 * Erstellt eine neue Instanz des Symbols und setzt den zu verwendenden
-	 * Symbolsatz.
-	 * 
-	 * @param mapping
-	 *            Den Symbolsatz, der verwendet werden soll. Einige sind als
-	 *            statische Felder im Symbol verfügbar.
-	 */
-	public static void createSymbol(String[] mapping) {
-		instance = new Symbol(mapping);
-	}
 
 	/**
 	 * Diese Methode gibt das gemappte Symbol zurueck, dass von der View

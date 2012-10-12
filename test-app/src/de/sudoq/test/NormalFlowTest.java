@@ -2,8 +2,8 @@ package de.sudoq.test;
 
 import android.app.Activity;
 import de.sudoq.R;
+import de.sudoq.controller.game.SudokuActivity;
 import de.sudoq.controller.menus.SudokuPreferencesActivity;
-import de.sudoq.controller.sudoku.SudokuActivity;
 
 /**
  * this class represents the Scenario 7.1.1 (normaler Ablauf)

@@ -5,12 +5,12 @@ import android.app.Activity;
 import com.jayway.android.robotium.solo.Solo;
 
 import de.sudoq.R;
+import de.sudoq.controller.game.SudokuActivity;
 import de.sudoq.controller.menus.MainActivity;
 import de.sudoq.controller.menus.PlayerPreferencesActivity;
 import de.sudoq.controller.menus.StatisticsActivity;
 import de.sudoq.controller.menus.SudokuLoadingActivity;
 import de.sudoq.controller.menus.SudokuPreferencesActivity;
-import de.sudoq.controller.sudoku.SudokuActivity;
 
 public class MenuTest extends SudoqTestCase {
 

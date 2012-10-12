@@ -2,9 +2,9 @@ package de.sudoq.test;
 
 import android.app.Activity;
 import de.sudoq.R;
+import de.sudoq.controller.game.SudokuActivity;
 import de.sudoq.controller.menus.MainActivity;
 import de.sudoq.controller.menus.SudokuPreferencesActivity;
-import de.sudoq.controller.sudoku.SudokuActivity;
 
 public class CrossActivityTests extends SudoqTestCase {
 

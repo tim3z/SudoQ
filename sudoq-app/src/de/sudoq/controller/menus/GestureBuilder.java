@@ -1,6 +1,6 @@
 /*
  * SudoQ is a Sudoku-App for Adroid Devices with Version 2.2 at least.
- * Copyright (C) 2012  Haiko Klare, Julian Geppert, Jan-Bernhard Kordaß, Jonathan Kieling, Tim Zeitz, Timo Abele
+ * Copyright (C) 2012  Heiko Klare, Julian Geppert, Jan-Bernhard Kordaß, Jonathan Kieling, Tim Zeitz, Timo Abele
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 3 of the License, or (at your option) any later version. 
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details. 
  * You should have received a copy of the GNU General Public License along with this program; if not, see <http://www.gnu.org/licenses/>.
@@ -12,7 +12,6 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.Iterator;
 import java.util.Set;
 
 import android.gesture.Gesture;
@@ -32,13 +31,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 import de.sudoq.R;
 import de.sudoq.controller.SudoqActivity;
-import de.sudoq.controller.sudoku.FieldViewPainter;
-import de.sudoq.controller.sudoku.FieldViewStates;
 import de.sudoq.controller.sudoku.InputListener;
 import de.sudoq.controller.sudoku.Symbol;
 import de.sudoq.model.files.FileManager;
 import de.sudoq.model.profile.Profile;
-import de.sudoq.view.VirtualKeyboardLayout;
+import de.sudoq.view.KeyboardLayout;
 
 /**
  * Der GestureBuilder gestattet es dem Benutzer selber Gesten für die Benutzung im Spiel zu definieren, das ermöglicht eine wesentlich höhere Erkennungsrate als mitgelieferte Gesten.
@@ -77,7 +74,7 @@ public class GestureBuilder extends SudoqActivity implements OnGesturePerformedL
 	/**
 	 * Der aktuelle Symbolsatz, für den Gesten eingetragen werden können.
 	 */
-	private String[] currentSymbolSet = Symbol.MAPPING_NUMBERS_HEX_LETTERS;
+	private Symbol currentSymbolSet;
 	
 	/**
 	 * Das aktuell ausgewählte Symbol, dass der GestureLibrary hinzugefügt werden soll.
@@ -87,16 +84,17 @@ public class GestureBuilder extends SudoqActivity implements OnGesturePerformedL
 	/**
 	 * Virtuelles Keyboard, zum Auswählen des Symbols, für das eine Geste angelegt werden soll.
 	 */
-	private VirtualKeyboardLayout virtualKeyboard;
+	private GestureKeyboardLayoutManager keyboardManager;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.gesturebuilder);
-		Symbol.createSymbol(currentSymbolSet);
-		this.virtualKeyboard = (VirtualKeyboardLayout) findViewById(R.id.gesture_builder_virtual_keyboard);
+		currentSymbolSet = new Symbol(Symbol.MAPPING_NUMBERS_HEX_LETTERS);
+		this.keyboardManager = new GestureKeyboardLayoutManager((KeyboardLayout)findViewById(R.id.gesture_builder_virtual_keyboard));
 		inflateGestures();
 		refreshKeyboard();
+		keyboardManager.registerListener(this);
 	}
 	
 	@Override
@@ -148,10 +146,7 @@ public class GestureBuilder extends SudoqActivity implements OnGesturePerformedL
 		switch (item.getItemId()) {
 		case MENU_FLUSH_GESTURE_LIBRARY:
 			Set<String> gestures = this.gestureStore.getGestureEntries();
-			for (Iterator<String> gestureIterator = gestures.iterator(); gestureIterator.hasNext();) {
-				String gestureName = (String) gestureIterator.next();
-				gestureIterator.remove();
-			}
+			gestures.clear();
 			saveGestures();
 			refreshKeyboard();
 			break;
@@ -191,9 +186,9 @@ public class GestureBuilder extends SudoqActivity implements OnGesturePerformedL
 	 */
 	private void markAlreadyCapturedSymbols() {
 		Set<String> gestures = this.gestureStore.getGestureEntries();
-		for (int i = 0; i < this.currentSymbolSet.length; i++) {
-			if (gestures.contains(this.currentSymbolSet[i])) {
-				this.virtualKeyboard.markField(Symbol.getInstance().getAbstract(this.currentSymbolSet[i]), FieldViewStates.SELECTED_NOTE);
+		for (int i = 0; i < this.currentSymbolSet.getNumberOfSymbols(); i++) {
+			if (gestures.contains(this.currentSymbolSet.getMapping(i))) {
+				this.keyboardManager.setAssigned(i);
 			}
 		}
 	}
@@ -202,13 +197,10 @@ public class GestureBuilder extends SudoqActivity implements OnGesturePerformedL
 	 * Aktuallisiert die Tastatur.
 	 */
 	private void refreshKeyboard() {
-		FieldViewPainter.getInstance().setMarking(this.virtualKeyboard, FieldViewStates.KEYBOARD);
-		Symbol.createSymbol(currentSymbolSet);
-		this.virtualKeyboard.refresh(currentSymbolSet.length);
-		this.virtualKeyboard.setActivated(true);
-		this.virtualKeyboard.enableAllButtons();
+		this.keyboardManager.setSymbolSet(currentSymbolSet);
+		this.keyboardManager.setActivated(true);
+		this.keyboardManager.enableAllButtons();
 		markAlreadyCapturedSymbols();
-		this.virtualKeyboard.registerListener(this);
 	}
 
 	@Override
@@ -217,7 +209,6 @@ public class GestureBuilder extends SudoqActivity implements OnGesturePerformedL
 			this.gestureOverlay.setVisibility(View.INVISIBLE);
 		} else {
 			saveGestures();
-			Set<String> gestures = this.gestureStore.getGestureEntries();
 			super.onBackPressed();
 		}
 	}
@@ -230,14 +221,14 @@ public class GestureBuilder extends SudoqActivity implements OnGesturePerformedL
 	public void onInput(int symbol) {
 		Set<String> gestures = this.gestureStore.getGestureEntries();
 		if (this.deleteSpecific) {
-			if (gestures.contains(Symbol.getInstance().getMapping(symbol))) {
-				this.gestureStore.removeEntry(Symbol.getInstance().getMapping(symbol));
+			if (gestures.contains(keyboardManager.getSymbolSet().getMapping(symbol))) {
+				this.gestureStore.removeEntry(keyboardManager.getSymbolSet().getMapping(symbol));
 				refreshKeyboard();
 			}
 			saveGestures();
 			this.deleteSpecific = false;
 		} else {
-			this.currentSelectedSymbol = Symbol.getInstance().getMapping(symbol);
+			this.currentSelectedSymbol = keyboardManager.getSymbolSet().getMapping(symbol);
 			final TextView textView = new TextView(gestureOverlay.getContext());
 			textView.setTextColor(Color.YELLOW);
 			textView.setText(" " + gestureOverlay.getContext().getString(R.string.gesture_builder_define_gesture) + " ");
@@ -246,4 +237,5 @@ public class GestureBuilder extends SudoqActivity implements OnGesturePerformedL
 			this.gestureOverlay.setVisibility(View.VISIBLE);
 		}
 	}
+
 }

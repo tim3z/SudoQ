@@ -19,6 +19,10 @@ public class BuilderPreferencesActivity extends SudoqActivity {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.sudoku_builder_preferences);
+		
+		// TODO TESTING ONLY!!
+		((EditText)findViewById(R.id.sudoku_builder_size_x)).setText("9");
+		((EditText)findViewById(R.id.sudoku_builder_size_y)).setText("9");
 	}
 	
 	public void startBuilder(View button) {

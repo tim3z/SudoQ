@@ -21,32 +21,39 @@
         </de.sudoq.view.FullScrollLayout>
 	</LinearLayout>
 	
-    <ListView
-    	android:id="@+id/sudoku_builder_list"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:layout_weight="2.5"
-        android:orientation="vertical" />
-    
     <LinearLayout 
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal">
         
         <Button 
-            android:id="@+id/sudoku_builder_add_constraint"
-            android:text="Add"
+            android:id="@+id/sudoku_builder_lines"
+            android:text="Lines"
             android:layout_height="wrap_content"
             android:layout_width="fill_parent"
             android:layout_weight="1" />
         
         <Button 
-            android:id="@+id/sudoku_builder_remove_constraint"
-            android:text="Remove"
+            android:id="@+id/sudoku_builder_blocks"
+            android:text="Blocks"
+            android:layout_height="wrap_content"
+            android:layout_width="fill_parent"
+            android:layout_weight="1" />
+        
+        <Button 
+            android:id="@+id/sudoku_builder_extra"
+            android:text="Extras"
             android:layout_height="wrap_content"
             android:layout_width="fill_parent"
             android:layout_weight="1" />
         
     </LinearLayout>
+    
+    <LinearLayout
+    	android:id="@+id/sudoku_builder_constraints"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_weight="2.5"
+        android:orientation="vertical" />
 
 </LinearLayout>

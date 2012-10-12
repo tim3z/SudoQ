@@ -1,6 +1,6 @@
 /*
  * SudoQ is a Sudoku-App for Adroid Devices with Version 2.2 at least.
- * Copyright (C) 2012  Haiko Klare, Julian Geppert, Jan-Bernhard Kordaß, Jonathan Kieling, Tim Zeitz, Timo Abele
+ * Copyright (C) 2012  Heiko Klare, Julian Geppert, Jan-Bernhard Kordaß, Jonathan Kieling, Tim Zeitz, Timo Abele
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 3 of the License, or (at your option) any later version. 
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details. 
  * You should have received a copy of the GNU General Public License along with this program; if not, see <http://www.gnu.org/licenses/>.
@@ -22,36 +22,29 @@ import android.view.ViewGroup.LayoutParams;
 import android.widget.TextView;
 import android.widget.Toast;
 import de.sudoq.R;
+import de.sudoq.controller.game.ActionListener;
+import de.sudoq.controller.game.GameKeyboardLayoutManager;
+import de.sudoq.controller.game.GameSudokuViewManager;
 import de.sudoq.model.game.Assistances;
 import de.sudoq.model.game.Game;
 import de.sudoq.model.profile.Profile;
 import de.sudoq.model.sudoku.Constraint;
 import de.sudoq.model.sudoku.Field;
-import de.sudoq.view.SudokuFieldView;
-import de.sudoq.view.SudokuLayout;
-import de.sudoq.view.VirtualKeyboardLayout;
+import de.sudoq.view.PaintableView;
+import de.sudoq.view.RasterLayout;
+import de.sudoq.view.KeyboardLayout;
 
 /**
  * Ein Vermittler zwischen einem Sudoku und den verschiedenen
  * Eingabemöglichkeiten, also insbesondere Tastatur und Gesten-View.
  */
-public class UserInteractionMediator implements OnGesturePerformedListener, InputListener, FieldInteractionListener, ObservableActionCaster {
+public class UserInteractionMediator implements OnGesturePerformedListener, InputListener, SelectedViewChangedListener, ObservableActionCaster {
 
 	/**
 	 * Flag für den Notizmodus.
 	 */
 	private boolean noteMode;
 
-	/**
-	 * Die SudokuView, die die Anzeige eines Sudokus mit seinen Feldern
-	 * übernimmt.
-	 */
-	private SudokuLayout sudokuView;
-
-	/**
-	 * Virtuelles Keyboard, welches beim Antippen eines Feldes angezeigt wird.
-	 */
-	private VirtualKeyboardLayout virtualKeyboard;
 
 	/**
 	 * Das aktuelle Spiel.
@@ -73,6 +66,11 @@ public class UserInteractionMediator implements OnGesturePerformedListener, Inpu
 	 */
 	private GestureStore gestureStore;
 
+	
+	private GameSudokuViewManager gameViewManager;
+	
+	private GameKeyboardLayoutManager keyboardManager;
+	
 	/**
 	 * Instanziiert einen neuen UserInteractionMediator.
 	 * 
@@ -88,63 +86,63 @@ public class UserInteractionMediator implements OnGesturePerformedListener, Inpu
 	 * @param gestureStore
 	 *            Die Bibliothek der Gesten
 	 */
-	public UserInteractionMediator(VirtualKeyboardLayout virtualKeyboard, SudokuLayout sudokuView, Game game, GestureOverlayView gestureOverlay,
-			GestureStore gestureStore) {
+	public UserInteractionMediator(GameSudokuViewManager gameViewManager, KeyboardLayout virtualKeyboard, RasterLayout sudokuView, Game game, GestureOverlayView gestureOverlay,
+			GestureStore gestureStore, Symbol symbolSet) {
 		this.actionListener = new ArrayList<ActionListener>();
 
+		this.gameViewManager = gameViewManager;
+		this.gameViewManager.setSymbolSet(symbolSet);
+		this.gameViewManager.registerListener(this);
 		this.game = game;
-		this.sudokuView = sudokuView;
-		this.virtualKeyboard = virtualKeyboard;
-		this.virtualKeyboard.registerListener(this);
+		
+		this.keyboardManager = new GameKeyboardLayoutManager(virtualKeyboard);
+		// DUMMY
+		this.keyboardManager.setSymbolSet(symbolSet);
+		this.keyboardManager.registerListener(this);
+		
 		this.gestureOverlay = gestureOverlay;
 		this.gestureStore = gestureStore;
 		this.gestureOverlay.addOnGesturePerformedListener(this);
 		this.gestureOverlay.setGestureStrokeType(GestureOverlayView.GESTURE_STROKE_TYPE_MULTIPLE);
-		this.sudokuView.registerListener(this);
 	}
 
 	public void onInput(int symbol) {
-		SudokuFieldView currentField = this.sudokuView.getCurrentFieldView();
+		PaintableView currentField = this.gameViewManager.getSelectedView();
 		for (ActionListener listener : actionListener) {
 			if (this.noteMode) {
-				if (currentField.getField().isNoteSet(symbol)) {
-					listener.onNoteDelete(currentField.getField(), symbol);
+				if (gameViewManager.getField(currentField).isNoteSet(symbol)) {
+					listener.onNoteDelete(gameViewManager.getField(currentField), symbol);
 				} else {
-					listener.onNoteAdd(currentField.getField(), symbol);
+					listener.onNoteAdd(gameViewManager.getField(currentField), symbol);
 				}
 			} else {
-				if (symbol == currentField.getField().getCurrentValue()) {
-					listener.onDeleteEntry(currentField.getField());
+				if (symbol == gameViewManager.getField(currentField).getCurrentValue()) {
+					listener.onDeleteEntry(gameViewManager.getField(currentField));
 				} else {
-					listener.onAddEntry(currentField.getField(), symbol);
+					listener.onAddEntry(gameViewManager.getField(currentField), symbol);
 				}
 			}
 		}
 
 		updateKeyboard();
 	}
+	
+	public void updateKeyboard() {
+		keyboardManager.setNoteMode(noteMode);
+		this.keyboardManager.setSelectedField(gameViewManager.getField(gameViewManager.getSelectedView()));
+		if (gameViewManager.getSelectedView() != null && gameViewManager.getField(gameViewManager.getSelectedView()).isEditable() && !game.isFinished()) {
+			restrictCandidates();
+			this.keyboardManager.setActivated(true);
+		} else {
+			this.keyboardManager.setActivated(false);
+		}
+	}
 
-	public void onFieldSelected(SudokuFieldView view) {
-		SudokuFieldView currentField = this.sudokuView.getCurrentFieldView();
-		if (currentField != view) {
+	public void onSelectedViewChanged(PaintableView oldView, PaintableView newView) {
+		if (oldView != newView) {
 			this.noteMode = Profile.getInstance().isGestureActive() && !game.isFinished();
-
-			if (currentField != null)
-				currentField.deselect(true);
-
-			this.sudokuView.setCurrentFieldView(view);
-			currentField = view;
-			if (currentField != null)
-				currentField.setNoteState(this.noteMode);
-			currentField.select(this.game.isAssistanceAvailable(Assistances.markRowColumn));
-			if (currentField.getField().isEditable() && !game.isFinished()) {
-				restrictCandidates();
-				this.virtualKeyboard.setActivated(true);
-			} else {
-				this.virtualKeyboard.setActivated(false);
-			}
 		} else if (!game.isFinished()) {
-			if (Profile.getInstance().isGestureActive() && this.sudokuView.getCurrentFieldView().getField().isEditable()) {
+			if (Profile.getInstance().isGestureActive() && gameViewManager.getField(newView) != null && gameViewManager.getField(newView).isEditable()) {
 				this.gestureOverlay.setVisibility(View.VISIBLE);
 				restrictCandidates();
 				final TextView textView = new TextView(gestureOverlay.getContext());
@@ -155,28 +153,8 @@ public class UserInteractionMediator implements OnGesturePerformedListener, Inpu
 			} else {
 				this.noteMode = !this.noteMode;
 			}
-			currentField.setNoteState(this.noteMode);
 		}
-
 		updateKeyboard();
-	}
-
-	/**
-	 * Aktualisiert die Anzeige der Tastatur.
-	 */
-	void updateKeyboard() {
-		SudokuFieldView currentField = this.sudokuView.getCurrentFieldView();
-		for (int i = 0; i < this.game.getSudoku().getSudokuType().getNumberOfSymbols(); i++) {
-			if (currentField != null && i == currentField.getField().getCurrentValue() && !this.noteMode) {
-				this.virtualKeyboard.markField(i, FieldViewStates.SELECTED_INPUT_BORDER);
-			} else if (currentField != null && currentField.getField().isNoteSet(i) && this.noteMode) {
-				this.virtualKeyboard.markField(i, FieldViewStates.SELECTED_NOTE_BORDER);
-			} else {
-				this.virtualKeyboard.markField(i, FieldViewStates.DEFAULT_BORDER);
-			}
-		}
-
-		this.virtualKeyboard.invalidate();
 	}
 
 	public void notifyListener() {
@@ -199,12 +177,7 @@ public class UserInteractionMediator implements OnGesturePerformedListener, Inpu
 	 *            Gibt den zu setzenden Zustand an
 	 */
 	public void setKeyboardState(boolean activated) {
-		this.virtualKeyboard.setActivated(activated);
-	}
-
-	public void onFieldChanged(SudokuFieldView view) {
-		updateKeyboard();
-
+		this.keyboardManager.setActivated(activated);
 	}
 
 	/**
@@ -223,32 +196,32 @@ public class UserInteractionMediator implements OnGesturePerformedListener, Inpu
 			Prediction prediction = predictions.get(0);
 			if (prediction.score > 1.5) {
 				for (ActionListener listener : this.actionListener) {
-					if (prediction.name.equals(String.valueOf(Symbol.getInstance().getMapping(this.sudokuView.getCurrentFieldView().getField().getCurrentValue())))) {
-						listener.onDeleteEntry(this.sudokuView.getCurrentFieldView().getField());
+					if (prediction.name.equals(String.valueOf(keyboardManager.getSymbolSet().getMapping(gameViewManager.getField(this.gameViewManager.getSelectedView()).getCurrentValue())))) {
+						listener.onDeleteEntry(gameViewManager.getField(this.gameViewManager.getSelectedView()));
 					} else {
-						int number = Symbol.getInstance().getAbstract(prediction.name);
-						int save = this.sudokuView.getCurrentFieldView().getField().getCurrentValue();
+						int number = keyboardManager.getSymbolSet().getAbstract(prediction.name);
+						int save = gameViewManager.getField(this.gameViewManager.getSelectedView()).getCurrentValue();
 						if (number >= this.game.getSudoku().getSudokuType().getNumberOfSymbols())
 							number = -1;
 						if (number != -1 && this.game.isAssistanceAvailable(Assistances.restrictCandidates)) {
-							this.sudokuView.getCurrentFieldView().getField().setCurrentValue(number, false);
+							gameViewManager.getField(this.gameViewManager.getSelectedView()).setCurrentValue(number, false);
 							for (Constraint c : this.game.getSudoku().getSudokuType()) {
 								if (!c.isSaturated(this.game.getSudoku())) {
 									number = -2;
 									break;
 								}
 							}
-							this.sudokuView.getCurrentFieldView().getField().setCurrentValue(save, false);
+							gameViewManager.getField(this.gameViewManager.getSelectedView()).setCurrentValue(save, false);
 						}
 						if (number != -1 && number != -2) {
-							listener.onAddEntry(this.sudokuView.getCurrentFieldView().getField(), number);
+							listener.onAddEntry(gameViewManager.getField(this.gameViewManager.getSelectedView()), number);
 							this.gestureOverlay.setVisibility(View.INVISIBLE);
 						} else if (number == -1) {
-							Toast.makeText(this.sudokuView.getContext(),
-									this.sudokuView.getContext().getString(R.string.toast_invalid_symbol), Toast.LENGTH_SHORT).show();
+							Toast.makeText(this.gameViewManager.getSudokuLayout().getContext(),
+									this.gameViewManager.getSudokuLayout().getContext().getString(R.string.toast_invalid_symbol), Toast.LENGTH_SHORT).show();
 						} else if (number == -2) {
-							Toast.makeText(this.sudokuView.getContext(),
-									this.sudokuView.getContext().getString(R.string.toast_restricted_symbol), Toast.LENGTH_SHORT).show();
+							Toast.makeText(this.gameViewManager.getSudokuLayout().getContext(),
+									this.gameViewManager.getSudokuLayout().getContext().getString(R.string.toast_restricted_symbol), Toast.LENGTH_SHORT).show();
 						}
 					}
 				}
@@ -260,21 +233,26 @@ public class UserInteractionMediator implements OnGesturePerformedListener, Inpu
 	 * Schränkt die Kandidaten auf der Tastatur ein.
 	 */
 	private void restrictCandidates() {
-		this.virtualKeyboard.enableAllButtons();
+		this.keyboardManager.enableAllButtons();
 		if (this.game.isAssistanceAvailable(Assistances.restrictCandidates)) {
-			int save = this.sudokuView.getCurrentFieldView().getField().getCurrentValue();
+			int save = gameViewManager.getField(this.gameViewManager.getSelectedView()).getCurrentValue();
 			for (int i = 0; i < this.game.getSudoku().getSudokuType().getNumberOfSymbols(); i++) {
-				this.sudokuView.getCurrentFieldView().getField().setCurrentValue(i, false);
+				gameViewManager.getField(this.gameViewManager.getSelectedView()).setCurrentValue(i, false);
 				for (Constraint c : this.game.getSudoku().getSudokuType()) {
 					if (!c.isSaturated(this.game.getSudoku())) {
-						this.virtualKeyboard.disableButton(i);
+						this.keyboardManager.disableButton(i);
 						break;
 					}
 				}
-				this.sudokuView.getCurrentFieldView().getField().setCurrentValue(Field.EMPTYVAL, false);
+				gameViewManager.getField(this.gameViewManager.getSelectedView()).setCurrentValue(Field.EMPTYVAL, false);
 			}
-			this.sudokuView.getCurrentFieldView().getField().setCurrentValue(save, false);
+			gameViewManager.getField(this.gameViewManager.getSelectedView()).setCurrentValue(save, false);
 		}
 	}
-
+	
+	public void setSymbolSet(Symbol symbol) {
+		this.gameViewManager.setSymbolSet(symbol);
+		this.keyboardManager.setSymbolSet(symbol);
+	}
+	
 }
