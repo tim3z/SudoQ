@@ -20,6 +20,7 @@
     <string name="toast_solved_correct">Toutes les cases ont été résolues correctement</string>
     <string name="toast_invalid_symbol">Symbole invalide</string>
     <string name="toast_restricted_symbol">Symbole restreint</string>
+    <string name="toast_stop_that">HALTE AU!!!</string>
     
     <!-- Splash -->
     <string name="splash_text">SudoQ se prépare pour la première utilisation</string>

@@ -28,6 +28,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 import de.sudoq.R;
 import de.sudoq.model.files.FileManager;
 import de.sudoq.model.game.GameData;
@@ -94,6 +95,9 @@ public class SudokuLoadingAdapter extends ArrayAdapter<GameData> {
 			
 		} catch (FileNotFoundException e) {
 			Log.w(LOG_TAG, this.context.getString(R.string.error_thumbnail_load));
+		} catch (OutOfMemoryError e) {
+			Toast.makeText(context, context.getString(R.string.toast_stop_that), Toast.LENGTH_LONG).show();
+			((SudokuLoadingActivity) context).finish();
 		}
 		
 		sudokuType.setText(typeStrings[gameDatas.get(position).getType().ordinal()]);

@@ -33,6 +33,7 @@
     <string name="toast_solved_correct">Everything is solved correctly</string>
     <string name="toast_invalid_symbol">Invalid symbol</string>
     <string name="toast_restricted_symbol">Symbol is restricted</string>
+    <string name="toast_stop_that">STOP THAT!!!</string>
     
     <!-- Splash -->
     <string name="splash_text">SudoQ is being initialized for the first start</string>    
