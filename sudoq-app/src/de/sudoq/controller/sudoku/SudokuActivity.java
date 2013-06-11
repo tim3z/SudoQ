@@ -15,6 +15,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
 import java.util.Set;
 
 import android.app.AlertDialog;
@@ -28,7 +29,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
 import android.view.Gravity;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.MeasureSpec;
 import android.view.View.OnClickListener;
@@ -748,16 +748,26 @@ public class SudokuActivity extends SudoqActivity implements OnClickListener, Ac
 	}
 	
 	/**
-	 * Returns a string in the format "mm:ss" implied by the specified time in seconds.
+	 * Returns a string in the format "HH:mm:ss" implied by the specified time in seconds.
+	 * There is no zero-padding for Hours, instead the string is just shorter if hours is zero.
 	 * @param time the time to format in seconds
-	 * @return a string representing the specified time in format "mm:ss"
+	 * @return a string representing the specified time in format "D..D HH:mm:ss"
 	 */
 	private String getTimeString(int time) {
 		Date res = new Date();
 		res.setMinutes(time / 60);
 		res.setSeconds(time % 60);
-		String returnString = new SimpleDateFormat("mm:ss").format(res);
-		return returnString;
+		res.setHours(time / 3600);
+		
+		StringBuilder pattern = new StringBuilder("mm:ss");
+		
+		if(res.getHours() > 0){
+				pattern.insert(0, "H:");
+				if(res.getHours() >= 10)
+					pattern.insert(0,"H");
+		}
+		
+		return new SimpleDateFormat(pattern.toString(), Locale.US).format(res);
 	}
 
 	/**
